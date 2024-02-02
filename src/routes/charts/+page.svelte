@@ -19,39 +19,39 @@
     $: refresh($csvDataStore);
 
     const canvasBackgroundPlugin = {
-    id: 'canvasBackground',
-    beforeDraw: function(chart) {
-        const { ctx, chartArea: { left, top, right, bottom }, scales: { x, y } } = chart;
-        const colors = {
-            red: [240, 128, 128], // Soft red
-            orange: [240, 164, 100], // Soft orange
-            green: [144, 238, 144], // Soft green
-            blue: [173, 216, 230], // Light blue
-            violet: [221, 160, 221], // Plum, softer violet
-        };
+        id: 'canvasBackground',
+        beforeDraw: function(chart) {
+            const { ctx, chartArea: { left, top, right, bottom }, scales: { x, y } } = chart;
+            const colors = {
+                red: [240, 128, 128], // Soft red
+                orange: [240, 164, 100], // Soft orange
+                green: [144, 238, 144], // Soft green
+                blue: [173, 216, 230], // Light blue
+                violet: [221, 160, 221], // Plum, softer violet
+            };
 
-        const thresholds = [550, 650, 800, 1000, 1200]; // Define your thresholds
-        const colorKeys = Object.keys(colors);
-        const maxYValue = Math.max(...chart.config.data.datasets.flatMap(ds => ds.data));
+            const thresholds = [550, 650, 800, 1000, 1200]; // Define your thresholds
+            const colorKeys = Object.keys(colors);
+            const maxYValue = Math.max(...chart.config.data.datasets.flatMap(ds => ds.data));
 
-        function bgColors(ymin, ymax, color) {
-            const from = y.getPixelForValue(ymin);
-            const to = y.getPixelForValue(Math.min(ymax, maxYValue));
-            ctx.save();
-            ctx.fillStyle = `rgba(${color[0]}, ${color[1]}, ${color[2]}, 1)`;
-            ctx.fillRect(left, to, right - left, from - to);
-            ctx.restore();
-        }
-
-        // Dynamically fill colors based on thresholds and maxYValue
-        thresholds.reduce((prevY, currentY, index) => {
-            if (prevY < maxYValue) {
-                bgColors(prevY, currentY, colors[colorKeys[index]]);
+            function bgColors(ymin, ymax, color) {
+                const from = y.getPixelForValue(ymin);
+                const to = y.getPixelForValue(Math.min(ymax, maxYValue));
+                ctx.save();
+                ctx.fillStyle = `rgba(${color[0]}, ${color[1]}, ${color[2]}, 1)`;
+                ctx.fillRect(left, to, right - left, from - to);
+                ctx.restore();
             }
-            return currentY;
-        }, 0);
-    }
-};
+
+            // Dynamically fill colors based on thresholds and maxYValue
+            thresholds.reduce((prevY, currentY, index) => {
+                if (prevY < maxYValue) {
+                    bgColors(prevY, currentY, colors[colorKeys[index]]);
+                }
+                return currentY;
+            }, 0);
+        }
+    };
 
     function refresh(data) {
         labels = data.allData.map(entry => entry.Date);
@@ -85,26 +85,24 @@
             }
         },
         plugins: {
-        // Plugin for the title
-        title: {
-            display: true,
-            text: 'GreenWave Cubic Feet Per Second (CFS) Bend, Oregon',
-            color: "#0e3b49",
-            font: {
-                size: 20,
-
+            legend: {
+                display: false
             },
-            padding: {
-                top: 20,
-                bottom: 30
+            // Plugin for the title
+            title: {
+                display: true,
+                text: 'GreenWave Cubic Feet Per Second (CFS) Bend, Oregon',
+                color: "#0e3b49",
+                font: {
+                    size: 20,
+
+                },
+                padding: {
+                    top: 20,
+                    bottom: 30
+                }
             }
         },
-        // Other global plugin options can go here
-        legend: {
-            display: true,
-            position: 'top',
-        },
-    },
         // maintainAspectRatio: false
     };
 </script>
