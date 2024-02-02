@@ -13,6 +13,7 @@
     let chartData = {}
     let options = {}
     let maxYValue = 1200;
+    let minYValue = 0;
 
     // Subscriber to the store to process data for the chart
     onMount(async () => {
@@ -37,7 +38,8 @@
             const colorKeys = Object.keys(colors);
 
             function bgColors(ymin, ymax, color) {
-                const from = y.getPixelForValue(ymin);
+                // from should never be
+                const from = y.getPixelForValue(Math.max(ymin, minYValue - 20));
                 const to = y.getPixelForValue(Math.min(ymax, maxYValue + 5));
                 ctx.save();
                 ctx.fillStyle = `rgba(${color[0]}, ${color[1]}, ${color[2]}, 1)`;
@@ -56,13 +58,15 @@
     };
 
     function refresh(data) {
-        labels = data.allData.map(entry => entry.Date);
+        // Remove the hour and minute from the date
+        labels = data.allData.map(entry => entry.Date.split(' ')[0]);
         const everyX = 70;
         labels =  labels.filter((_, i) => i % everyX === 0 || i === data.allData.length - 1);
         cfsChartData = data.allData.map(entry => entry['CFS @ Head of Park']);
         cfsChartData = cfsChartData.filter((_, i) => i % everyX === 0 || i === data.allData.length - 1);
         // Get the max value for the Y-axis
         maxYValue = Math.max(...cfsChartData) + 100;
+        minYValue = Math.min(...cfsChartData);
         chartData = {
             labels,
             datasets: [
@@ -77,35 +81,45 @@
             ]
         };
         options = {
-        scales: {
-            x: {
-                display: false,
-                ticks: {
-                    maxTicksLimit: 1
+            scales: {
+                x: {
+                    display: true,
+                    beginAtZero: false,
+                    ticks: {
+                        maxTicksLimit: 6,
+                        callback: function(val, index) {
+
+                            return index !== 0 ? this.getLabelForValue(val) : '';
+                        },
+                    },
+                    grid: {
+                        display: false
+                    },
+                },
+                y: {
+                    beginAtZero: false,
+                    suggestedMax: maxYValue,
+
                 }
             },
-            y: {
-                beginAtZero: false,
-                suggestedMax: maxYValue,
-            }
-        },
-        plugins: {
-            legend: {
-                display: false
-            },
-            // Plugin for the title
-            title: {
-                display: true,
-                text: 'GreenWave Cubic Feet Per Second (CFS) Bend, Oregon',
-                color: "#f6f8f8",
-                font: {
-                    size: 20,
-
+            plugins: {
+                legend: {
+                    display: false
                 },
-            }
-        },
-        maintainAspectRatio: true
-    };
+                // Plugin for the title
+                title: {
+                    display: true,
+                    text: 'GreenWave Cubic Feet Per Second (CFS) Bend, Oregon',
+                    color: "#f6f8f8",
+                    font: {
+                        size: 20,
+
+                    },
+
+                }
+            },
+            maintainAspectRatio: false
+        };
     }
 
 
@@ -132,7 +146,7 @@
     }
     .chart-container{
         width: 50%;
-        height: 50vh;
+        height: 60vh;
     }
     @media (max-width: 900px) {
         .chart-container{
