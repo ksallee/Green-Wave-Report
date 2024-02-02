@@ -84,6 +84,27 @@
                 }
             }
         },
+        plugins: {
+        // Plugin for the title
+        title: {
+            display: true,
+            text: 'GreenWave Cubic Feet Per Second (CFS) Bend, Oregon',
+            color: "#0e3b49",
+            font: {
+                size: 20,
+
+            },
+            padding: {
+                top: 20,
+                bottom: 30
+            }
+        },
+        // Other global plugin options can go here
+        legend: {
+            display: true,
+            position: 'top',
+        },
+    },
         // maintainAspectRatio: false
     };
 </script>
