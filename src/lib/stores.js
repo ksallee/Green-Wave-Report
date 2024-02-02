@@ -19,16 +19,19 @@ function createCsvDataStore() {
     const { subscribe, set } = writable({ lastEntry: {}, allData: [] });
 
     // Fetch and update the store's value
-    function fetchCsvData(url) {
-        fetch(url)
-            .then(response => response.text())
-            .then(csvText => {
-                const jsonData = csvToJson(csvText);
-                const lastEntry = jsonData[jsonData.length - 1];
-                set({ lastEntry, allData: jsonData });
-            })
-            .catch(error => console.error('Error fetching CSV data:', error));
+    function fetchCsvData() {
+    // Assuming the static directory is served from the root in SvelteKit
+    const url = 'GREENWAVE_Year.csv'; // Update the path according to your static directory structure
+    fetch(url)
+        .then(response => response.text())
+        .then(csvText => {
+            const jsonData = csvToJson(csvText);
+            const lastEntry = jsonData[jsonData.length - 1];
+            set({ lastEntry, allData: jsonData });
+        })
+        .catch(error => console.error('Error fetching CSV data:', error));
     }
+
 
     return {
         subscribe,

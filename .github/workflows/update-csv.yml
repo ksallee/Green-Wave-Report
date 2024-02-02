@@ -1,0 +1,23 @@
+name: Fetch CSV Data
+
+on:
+  schedule:
+    - cron: '*/30 * * * *' # Runs every 30 minutes
+
+jobs:
+  update-csv:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Fetch CSV data
+        run: curl https://www.gwsr2024.xyz/surf/GREENWAVE_Year.csv -o static/GREENWAVE_Year.csv
+
+      - name: Commit and push if changes
+        run: |
+          git config --global user.name 'github-actions'
+          git config --global user.email 'github-actions@github.com'
+          git add static/GREENWAVE_Year.csv
+          git commit -m "Update CSV data" -a || echo "No changes to commit"
+          git push
