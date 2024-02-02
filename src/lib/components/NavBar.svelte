@@ -1,13 +1,14 @@
 <script>
   import { fly } from "svelte/transition";
   import { cfsData } from "$lib/stores";
+  import {onMount} from "svelte";
 
   export let color = "white";
   $: selectedColor = cfsData.getRgbColorStr(cfsData.adjustColor(color, 0.2));
   $: normalColor = cfsData.getRgbColorStr(cfsData.adjustColor(color, 0.4));
 
   let navItems = [
-      { label: "Home", href: "/", selected: true },
+      { label: "Home", href: "/", selected: false },
       { label: "Charts", href: "/charts", selected: false },
   ];
 
@@ -18,6 +19,15 @@
     }
     navItems = navItems;
   }
+  onMount(() => {
+    let path = window.location.pathname;
+    navItems.forEach(item => item.selected = false);
+    let item = navItems.find(item => item.href === path);
+    if (item){
+      item.selected = true;
+    }
+    navItems = navItems;
+  });
 
 
 </script>
