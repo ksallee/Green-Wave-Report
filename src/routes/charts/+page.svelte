@@ -106,17 +106,7 @@
                 legend: {
                     display: false
                 },
-                // Plugin for the title
-                title: {
-                    display: true,
-                    text: 'GreenWave Cubic Feet Per Second (CFS) Bend, Oregon',
-                    color: "#f6f8f8",
-                    font: {
-                        size: 20,
 
-                    },
-
-                }
             },
             maintainAspectRatio: false
         };
@@ -128,6 +118,7 @@
 
 <div class="container" in:fade>
     <div class="chart-container">
+        <h1>GreenWave Cubic Feet Per Second (CFS) Bend, Oregon</h1>
         <Line data={chartData} {options} plugins={[canvasBackgroundPlugin]} width={400} height={200} />
     </div>
 </div>
@@ -143,6 +134,9 @@
         flex-direction: column;
         width: 100%;
         height: 100%;
+    }
+    h1{
+        color: #f8f8f8;
     }
     .chart-container{
         width: 50%;
