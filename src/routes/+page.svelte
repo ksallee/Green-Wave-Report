@@ -34,7 +34,7 @@
     }
 
     onMount(() => {
-        csvDataStore.fetchCsvData('http://www.gwsr2024.xyz/surf/GREENWAVE_Year.csv');
+        csvDataStore.fetchCsvData('https://www.gwsr2024.xyz/surf/GREENWAVE_Year.csv');
     });
 
     $: refresh($csvDataStore);
