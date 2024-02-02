@@ -38,7 +38,7 @@
             const from = y.getPixelForValue(ymin);
             const to = y.getPixelForValue(Math.min(ymax, maxYValue));
             ctx.save();
-            ctx.fillStyle = `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.6)`;
+            ctx.fillStyle = `rgba(${color[0]}, ${color[1]}, ${color[2]}, 1)`;
             ctx.fillRect(left, to, right - left, from - to);
             ctx.restore();
         }
@@ -65,8 +65,10 @@
                 {
                     label: 'CFS @ Head of Park',
                     data: cfsData,
-                    borderColor: 'rgb(42,114,222)',
-                    tension: 0.1
+                    borderColor: 'rgb(46,82,108)',
+                    backgroundColor: 'rgb(55,183,183)',
+                    tension: 0.1,
+                    borderWidth: 2
                 },
             ]
         };
