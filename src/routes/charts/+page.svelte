@@ -18,17 +18,47 @@
 
     $: refresh($csvDataStore);
 
+    const canvasBackgroundPlugin = {
+    id: 'canvasBackground',
+    beforeDraw: function(chart) {
+        const { ctx, chartArea: { left, top, right, bottom }, scales: { x, y } } = chart;
+        const colors = {
+            red: [240, 128, 128], // Soft red
+            orange: [240, 164, 100], // Soft orange
+            green: [144, 238, 144], // Soft green
+            blue: [173, 216, 230], // Light blue
+            violet: [221, 160, 221], // Plum, softer violet
+        };
+
+        const thresholds = [550, 650, 800, 1000, 1200]; // Define your thresholds
+        const colorKeys = Object.keys(colors);
+        const maxYValue = Math.max(...chart.config.data.datasets.flatMap(ds => ds.data));
+
+        function bgColors(ymin, ymax, color) {
+            const from = y.getPixelForValue(ymin);
+            const to = y.getPixelForValue(Math.min(ymax, maxYValue));
+            ctx.save();
+            ctx.fillStyle = `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.4)`;
+            ctx.fillRect(left, to, right - left, from - to);
+            ctx.restore();
+        }
+
+        // Dynamically fill colors based on thresholds and maxYValue
+        thresholds.reduce((prevY, currentY, index) => {
+            if (prevY < maxYValue) {
+                bgColors(prevY, currentY, colors[colorKeys[index]]);
+            }
+            return currentY;
+        }, 0);
+    }
+};
+
     function refresh(data) {
         labels = data.allData.map(entry => entry.Date);
-        const everyX = 20;
+        const everyX = 30;
         labels =  labels.filter((_, i) => i % everyX === 0 || i === data.allData.length - 1);
         cfsData = data.allData.map(entry => entry['CFS @ Head of Park']);
         cfsData = cfsData.filter((_, i) => i % everyX === 0 || i === data.allData.length - 1);
-        skimboardsData = data.allData.map(entry => entry['Skimboards or short fins!']);
-        skimboardsData = skimboardsData.filter((_, i) => i % everyX === 0 || i === data.allData.length - 1);
-        awesomeWaveTimeData = data.allData.map(entry => entry['AWESOME Wave Time']);
-        awesomeWaveTimeData = awesomeWaveTimeData.filter((_, i) => i % everyX === 0 || i === data.allData.length - 1);
-
         chartData = {
             labels,
             datasets: [
@@ -38,18 +68,6 @@
                     borderColor: 'rgb(42,114,222)',
                     tension: 0.1
                 },
-                {
-                    label: 'Skimboards or short fins!',
-                    data: skimboardsData,
-                    borderColor: 'rgb(255,145,86)',
-                    tension: 0.1
-                },
-                {
-                    label: 'AWESOME Wave Time',
-                    data: awesomeWaveTimeData,
-                    borderColor: 'rgb(115,229,58)',
-                    tension: 0.1
-                }
             ]
         };
     }
@@ -69,7 +87,7 @@
 </script>
 
 <div class="container">
-    <Line data={chartData} {options} width={400} height={200} />
+    <Line data={chartData} {options} plugins={[canvasBackgroundPlugin]} width={400} height={200} />
 </div>
 
 <style>
