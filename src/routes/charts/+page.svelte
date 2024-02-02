@@ -151,7 +151,7 @@
     @media (max-width: 900px) {
         .chart-container{
             width: 95%;
-            height: 70vh;
+            height: 40vh;
         }
         .container{
             margin: 2px auto;

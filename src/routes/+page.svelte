@@ -43,9 +43,12 @@
 <div class="container" in:fade>
     <div class="card" >
         {#if $cfsData.lastEntry}
-            <h1>CFS @ Head of Park</h1>
+            <h1>GreenWave Cubic Feet per Second (CFS)</h1>
             <h2>{$cfsValue.toFixed(0)}</h2>
-            <p><span class="label">Date:</span> <span class="value">{$formattedDate}</span></p>
+            <p>
+                <span class="label">Date:</span> <span class="value">{$formattedDate}</span>
+            </p>
+            <p class="value">Measured at Head of Park</p>
         {/if}
     </div>
 </div>
@@ -61,6 +64,9 @@
         justify-content: center;
         align-items: center;
 
+    }
+    p {
+        margin: 0!important;
     }
     .container{
         width: 100vw;
