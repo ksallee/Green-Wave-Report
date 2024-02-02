@@ -38,7 +38,7 @@
             const from = y.getPixelForValue(ymin);
             const to = y.getPixelForValue(Math.min(ymax, maxYValue));
             ctx.save();
-            ctx.fillStyle = `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.4)`;
+            ctx.fillStyle = `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.6)`;
             ctx.fillRect(left, to, right - left, from - to);
             ctx.restore();
         }
