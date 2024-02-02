@@ -46,7 +46,9 @@
                 weekday: 'long', // "Monday"
                 year: 'numeric', // "2024"
                 month: 'long', // "February"
-                day: 'numeric' // "1"
+                day: 'numeric', // "1"
+                hour: 'numeric',
+                minute: 'numeric',
             });
         }
         return '';
