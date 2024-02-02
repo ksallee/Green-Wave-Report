@@ -1,47 +1,19 @@
 <script>
     import { tweened } from 'svelte/motion';
     import { cubicOut } from 'svelte/easing';
-    import { csvDataStore } from "$lib/stores";
-    import { onMount } from 'svelte';
+    import { cfsData } from "$lib/stores";
     import {derived} from "svelte/store";
-
-    const colors = {
-        red: [240, 128, 128], // Soft red
-        orange: [240, 164, 100], // Soft orange
-        green: [144, 238, 144], // Soft green
-        blue: [173, 216, 230], // Light blue
-        violet: [221, 160, 221], // Plum, softer violet
-    };
 
     let cfsValue = tweened(400, {
         duration: 300,
         easing: cubicOut
     });
 
-    // Initialize cardColor with a default color
-    let cardColor = tweened(colors.red, {
-        duration: 300,
-        easing: cubicOut
-    });
-    const cardColorCSS = derived(cardColor, $cardColor => `rgb(${Math.round($cardColor[0])}, ${Math.round($cardColor[1])}, ${Math.round($cardColor[2])})`);
+    $: refresh($cfsData);
 
-    function getCfsColor(cfs) {
-        if (cfs <= 550) return colors.red;
-        if (cfs <= 650) return colors.orange;
-        if (cfs <= 800) return colors.green;
-        if (cfs <= 1000) return colors.blue;
-        return colors.violet;
-    }
-
-    onMount(async () => {
-        await csvDataStore.fetchCsvData('https://www.gwsr2024.xyz/surf/GREENWAVE_Year.csv');
-    });
-
-    $: refresh($csvDataStore);
-
-    const formattedDate = derived(csvDataStore, $csvDataStore => {
-        if ($csvDataStore.lastEntry && $csvDataStore.lastEntry["Date"]) {
-            const date = new Date($csvDataStore.lastEntry["Date"]);
+    const formattedDate = derived(cfsData, $cfsData => {
+        if ($cfsData.lastEntry && $cfsData.lastEntry["Date"]) {
+            const date = new Date($cfsData.lastEntry["Date"]);
             return date.toLocaleDateString('en-US', {
                 weekday: 'long', // "Monday"
                 year: 'numeric', // "2024"
@@ -55,10 +27,9 @@
     });
 
     function refresh(data) {
-        if ($csvDataStore.lastEntry && $csvDataStore.lastEntry["CFS @ Head of Park"]) {
-            const cfs = parseFloat($csvDataStore.lastEntry["CFS @ Head of Park"]);
+        if ($cfsData.lastEntry && $cfsData.lastEntry["CFS @ Head of Park"]) {
+            const cfs = parseFloat($cfsData.lastEntry["CFS @ Head of Park"]);
             cfsValue.set(cfs);
-            cardColor.set(getCfsColor(cfs)); // Update the card color based on CFS
         }
     }
 
@@ -68,9 +39,9 @@
     <title>Green Wave CFS</title>
 </svelte:head>
 
-<div class="container" style="--card-color: {$cardColorCSS};">
+<div class="container">
     <div class="card" >
-        {#if $csvDataStore.lastEntry}
+        {#if $cfsData.lastEntry}
             <h1>CFS @ Head of Park</h1>
             <h2>{$cfsValue.toFixed(0)}</h2>
             <p><span class="label">Date:</span> <span class="value">{$formattedDate}</span></p>
@@ -93,8 +64,6 @@
     .container{
         width: 100vw;
         height: 100vh;
-        transition: background-color 0.4s ease-out; /* Smooth transition for background color change */
-        background-color:  var(--card-color, #f08080); /* Default to soft red */
         display: flex;
         justify-content: center;
         align-items: center;
@@ -140,7 +109,7 @@
     }
     @media (max-width: 1000px) {
         .card {
-            width: 80vw;
+            width: 95vw;
         }
     }
 </style>

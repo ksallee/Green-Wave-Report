@@ -1,5 +1,10 @@
 <script>
   import { fly } from "svelte/transition";
+  import { cfsData } from "$lib/stores";
+
+  export let color = "white";
+  $: selectedColor = cfsData.getRgbColorStr(cfsData.adjustColor(color, 0.2));
+  $: normalColor = cfsData.getRgbColorStr(cfsData.adjustColor(color, 0.4));
 
   let navItems = [
       { label: "Home", href: "/", selected: true },
@@ -22,13 +27,14 @@
 >
   <div class="internalNav">
       {#each navItems as item, index}
-        <div class="link">
+        <div class="link" style="--norm-color: {normalColor};">
           <a
             href={item.href}
             class:selected={item.selected}
             class:margin_right={index === navItems.length - 1}
             on:click={() => handleSelected(item)}
             title={item.label}
+            style="--sel-color: {selectedColor};"
           >
             {item.label}
           </a>
@@ -49,27 +55,25 @@
       padding: 0rem 1rem;
   }
   .link{
-    color: #5B628A;
+    /*color: #f2f2f3;*/
+      color: var(--norm-color);
   }
   .link:hover{
-    color: #4791a8;
+    color: #e2e3e3;
   }
 
   .margin_right {
       margin-right: auto;
   }
   .selected {
-    color: #313965;
     font-weight: 600;
+    color: var(--sel-color);
   }
   nav{
     font-size: 15px;
     font-weight: 400;
     width: 100%;
     height: 20px;
-    position: fixed;
-    top: 0;
-    background-color: #F9F9FC;
     margin-bottom: 0.5rem;
     padding: .5rem 0rem;
     z-index: 1000;

@@ -1,22 +1,26 @@
 <script>
     import { Line  } from 'svelte-chartjs';
-    import { csvDataStore } from '$lib/stores'; // Adjust the import path as necessary
+    import { cfsData } from '$lib/stores'; // Adjust the import path as necessary
     import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Filler, Legend } from 'chart.js';
     import {onMount} from "svelte";
     ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Filler, Legend);
+    ChartJS.defaults.color = '#eae9e9'
+    ChartJS.defaults.borderColor = '#eae9e9'
 
     let labels = []; // Dates for the X-axis
-    let cfsData = []; // CFS for the Y-axis
+    let cfsChartData = []; // CFS for the Y-axis
     let skimboardsData = []; // Skimboards data for the Y-axis
     let awesomeWaveTimeData = []; // AWESOME Wave Time data for the Y-axis
     let chartData = {}
+    let options = {}
+    let maxYValue = 1200;
 
     // Subscriber to the store to process data for the chart
     onMount(async () => {
-        await csvDataStore.fetchCsvData('https://www.gwsr2024.xyz/surf/GREENWAVE_Year.csv');
+        await cfsData.fetchCsvData('https://www.gwsr2024.xyz/surf/GREENWAVE_Year.csv');
     });
 
-    $: refresh($csvDataStore);
+    $: refresh($cfsData);
 
     const canvasBackgroundPlugin = {
         id: 'canvasBackground',
@@ -32,7 +36,7 @@
 
             const thresholds = [550, 650, 800, 1000, 1200]; // Define your thresholds
             const colorKeys = Object.keys(colors);
-            const maxYValue = Math.max(...chart.config.data.datasets.flatMap(ds => ds.data));
+            // maxYValue = Math.max(...chart.config.data.datasets.flatMap(ds => ds.data));
 
             function bgColors(ymin, ymax, color) {
                 const from = y.getPixelForValue(ymin);
@@ -55,16 +59,18 @@
 
     function refresh(data) {
         labels = data.allData.map(entry => entry.Date);
-        const everyX = 30;
+        const everyX = 70;
         labels =  labels.filter((_, i) => i % everyX === 0 || i === data.allData.length - 1);
-        cfsData = data.allData.map(entry => entry['CFS @ Head of Park']);
-        cfsData = cfsData.filter((_, i) => i % everyX === 0 || i === data.allData.length - 1);
+        cfsChartData = data.allData.map(entry => entry['CFS @ Head of Park']);
+        cfsChartData = cfsChartData.filter((_, i) => i % everyX === 0 || i === data.allData.length - 1);
+        // Get the max value for the Y-axis
+        maxYValue = Math.max(...cfsChartData) + 100;
         chartData = {
             labels,
             datasets: [
                 {
                     label: 'CFS @ Head of Park',
-                    data: cfsData,
+                    data: cfsChartData,
                     borderColor: 'rgb(46,82,108)',
                     backgroundColor: 'rgb(55,183,183)',
                     tension: 0.1,
@@ -72,16 +78,17 @@
                 },
             ]
         };
-    }
-
-
-    const options = {
+        options = {
         scales: {
             x: {
                 display: false,
                 ticks: {
                     maxTicksLimit: 1
                 }
+            },
+            y: {
+                beginAtZero: false,
+                suggestedMax: maxYValue,
             }
         },
         plugins: {
@@ -97,30 +104,46 @@
                     size: 20,
 
                 },
-                padding: {
-                    top: 20,
-                    bottom: 30
-                }
             }
         },
-        // maintainAspectRatio: false
+        maintainAspectRatio: true
     };
+    }
+
+
+
 </script>
 
 <div class="container">
-    <Line data={chartData} {options} plugins={[canvasBackgroundPlugin]} width={400} height={200} />
+    <div class="chart-container">
+        <Line data={chartData} {options} plugins={[canvasBackgroundPlugin]} width={400} height={200} />
+    </div>
 </div>
 
 <style>
     .container{
-        width: 80vw;
-        height: 80vh;
-        background-color: white;
+        /*background-color: #f6f5f5;*/
         display: flex;
-        justify-content: center;
+        justify-content: flex-start;
         align-items: center;
-        background-color: #f5f5f5;
         margin: 30px auto;
-
+        padding: 20px;
+        flex-direction: column;
+        width: 100%;
+        height: 100%;
+    }
+    .chart-container{
+        width: 50%;
+        height: 50vh;
+    }
+    @media (max-width: 900px) {
+        .chart-container{
+            width: 95%;
+            height: 70vh;
+        }
+        .container{
+            margin: 2px auto;
+            padding: 2px;
+        }
     }
 </style>
