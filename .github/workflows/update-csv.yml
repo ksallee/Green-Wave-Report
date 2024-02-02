@@ -8,6 +8,9 @@ on:
       - main
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   update-csv:
     runs-on: ubuntu-latest
@@ -20,9 +23,9 @@ jobs:
 
       - name: Commit and push if changes
         run: |
-          git config --global user.name 'github-actions'
-          git config --global user.email 'github-actions@github.com'
-          git remote set-url origin https://x-access-token:${{ secrets.ACTION_PAT }}@github.com/ksallee/Green-Wave-Report.git
+          git config --global user.name 'Kevin Sallée'
+          git config --global user.email 'kevin.sallee@gpltech.com'
+          git remote set-url origin https://github.com/ksallee/Green-Wave-Report.git
           git add static/GREENWAVE_Year.csv
           git commit -m "Update CSV data" -a || echo "No changes to commit"
-          git push --set-upstream origin HEAD:main
+          git push
