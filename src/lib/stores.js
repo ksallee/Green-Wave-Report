@@ -3,7 +3,6 @@ import { writable } from 'svelte/store';
 // Utility function to convert CSV to JSON
 function csvToJson(csv) {
     const lines = csv.split('\n').filter(line => line.trim() !== '');
-    console.log("lines", lines)
     const headers = lines[0].split(',');
     return lines.slice(1).map(line => {
         const data = line.split(',');

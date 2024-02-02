@@ -33,8 +33,8 @@
         return colors.violet;
     }
 
-    onMount(() => {
-        csvDataStore.fetchCsvData('https://www.gwsr2024.xyz/surf/GREENWAVE_Year.csv');
+    onMount(async () => {
+        await csvDataStore.fetchCsvData('https://www.gwsr2024.xyz/surf/GREENWAVE_Year.csv');
     });
 
     $: refresh($csvDataStore);
@@ -55,7 +55,6 @@
     function refresh(data) {
         if ($csvDataStore.lastEntry && $csvDataStore.lastEntry["CFS @ Head of Park"]) {
             const cfs = parseFloat($csvDataStore.lastEntry["CFS @ Head of Park"]);
-            console.log("CFS: ", cfs);
             cfsValue.set(cfs);
             cardColor.set(getCfsColor(cfs)); // Update the card color based on CFS
         }
