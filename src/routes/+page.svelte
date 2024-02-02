@@ -39,6 +39,19 @@
 
     $: refresh($csvDataStore);
 
+    const formattedDate = derived(csvDataStore, $csvDataStore => {
+        if ($csvDataStore.lastEntry && $csvDataStore.lastEntry["Date"]) {
+            const date = new Date($csvDataStore.lastEntry["Date"]);
+            return date.toLocaleDateString('en-US', {
+                weekday: 'long', // "Monday"
+                year: 'numeric', // "2024"
+                month: 'long', // "February"
+                day: 'numeric' // "1"
+            });
+        }
+        return '';
+    });
+
     function refresh(data) {
         if ($csvDataStore.lastEntry && $csvDataStore.lastEntry["CFS @ Head of Park"]) {
             const cfs = parseFloat($csvDataStore.lastEntry["CFS @ Head of Park"]);
@@ -59,7 +72,7 @@
         {#if $csvDataStore.lastEntry}
             <h1>CFS @ Head of Park</h1>
             <h2>{$cfsValue.toFixed(0)}</h2>
-            <p><span class="label">Date:</span> {$csvDataStore.lastEntry["Date"]}</p>
+            <p><span class="label">Date:</span> <span class="value">{$formattedDate}</span></p>
         {/if}
     </div>
 </div>
@@ -105,11 +118,12 @@
     h2{
         font-weight: 700;
     }
-    p {
-        font-size: 1rem; /* Slightly larger paragraph text for clarity */
+    .value {
+        font-size: 14px
     }
     .label {
         font-weight: 700;
+        font-size: 14px;
     }
 
 
