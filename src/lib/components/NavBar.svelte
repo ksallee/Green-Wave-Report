@@ -4,8 +4,8 @@
   import {onMount} from "svelte";
 
   export let color = "white";
-  $: selectedColor = cfsData.getRgbColorStr(cfsData.adjustColor(color, 0.2));
-  $: normalColor = cfsData.getRgbColorStr(cfsData.adjustColor(color, 0.4));
+  $: selectedColor = cfsData.getRgbColorStr(cfsData.adjustColor(color, 0.1));
+  $: normalColor = cfsData.getRgbColorStr(cfsData.adjustColor(color, 0.3));
 
   let navItems = [
       { label: "Home", href: "/", selected: false },

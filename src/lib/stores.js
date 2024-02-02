@@ -1,6 +1,4 @@
-import { writable, get } from 'svelte/store';
-import {tweened} from "svelte/motion";
-import {cubicOut} from "svelte/easing";
+import { writable } from 'svelte/store';
 
 // Utility function to convert CSV to JSON
 function csvToJson(csv) {

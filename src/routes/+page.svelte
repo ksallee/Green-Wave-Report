@@ -3,6 +3,7 @@
     import { cubicOut } from 'svelte/easing';
     import { cfsData } from "$lib/stores";
     import {derived} from "svelte/store";
+    import {fade} from "svelte/transition";
 
     let cfsValue = tweened(400, {
         duration: 300,
@@ -39,7 +40,7 @@
     <title>Green Wave CFS</title>
 </svelte:head>
 
-<div class="container">
+<div class="container" in:fade>
     <div class="card" >
         {#if $cfsData.lastEntry}
             <h1>CFS @ Head of Park</h1>

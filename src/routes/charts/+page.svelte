@@ -1,5 +1,6 @@
 <script>
     import { Line  } from 'svelte-chartjs';
+    import {fade} from 'svelte/transition';
     import { cfsData } from '$lib/stores'; // Adjust the import path as necessary
     import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Filler, Legend } from 'chart.js';
     import {onMount} from "svelte";
@@ -9,8 +10,6 @@
 
     let labels = []; // Dates for the X-axis
     let cfsChartData = []; // CFS for the Y-axis
-    let skimboardsData = []; // Skimboards data for the Y-axis
-    let awesomeWaveTimeData = []; // AWESOME Wave Time data for the Y-axis
     let chartData = {}
     let options = {}
     let maxYValue = 1200;
@@ -36,11 +35,10 @@
 
             const thresholds = [550, 650, 800, 1000, 1200]; // Define your thresholds
             const colorKeys = Object.keys(colors);
-            // maxYValue = Math.max(...chart.config.data.datasets.flatMap(ds => ds.data));
 
             function bgColors(ymin, ymax, color) {
                 const from = y.getPixelForValue(ymin);
-                const to = y.getPixelForValue(Math.min(ymax, maxYValue));
+                const to = y.getPixelForValue(Math.min(ymax, maxYValue + 5));
                 ctx.save();
                 ctx.fillStyle = `rgba(${color[0]}, ${color[1]}, ${color[2]}, 1)`;
                 ctx.fillRect(left, to, right - left, from - to);
@@ -49,7 +47,7 @@
 
             // Dynamically fill colors based on thresholds and maxYValue
             thresholds.reduce((prevY, currentY, index) => {
-                if (prevY < maxYValue) {
+                if (prevY < maxYValue ) {
                     bgColors(prevY, currentY, colors[colorKeys[index]]);
                 }
                 return currentY;
@@ -99,7 +97,7 @@
             title: {
                 display: true,
                 text: 'GreenWave Cubic Feet Per Second (CFS) Bend, Oregon',
-                color: "#0e3b49",
+                color: "#f6f8f8",
                 font: {
                     size: 20,
 
@@ -114,7 +112,7 @@
 
 </script>
 
-<div class="container">
+<div class="container" in:fade>
     <div class="chart-container">
         <Line data={chartData} {options} plugins={[canvasBackgroundPlugin]} width={400} height={200} />
     </div>
