@@ -2,9 +2,8 @@
     import { onMount } from 'svelte';
     import { cfsData, cfsDataWhiteWater, cfsDataWicoBeno } from '$lib/stores';
     import CfsChart  from "$lib/components/CfsChart.svelte";
-    // Subscriber to the store to process data for the chart
+
     onMount(async () => {
-        await cfsData.fetchCsvData();
         await cfsDataWhiteWater.fetchCsvData();
         await cfsDataWicoBeno.fetchCsvData();
     });
