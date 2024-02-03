@@ -20,7 +20,7 @@
     export let data = [];
     export let displayLegend = false;
 
-    $: refresh(title, validLabels, dateOffset, endDate, datapointsDivisor, data);
+    $: refresh(data);
 
     let labels = []; // Dates for the X-axis
     let chartData = undefined
@@ -63,8 +63,12 @@
         }
     };
 
-    function refresh(title, validLabels, dateOffset, endDate, datapointsDivisor, data){
-        // console.log('refreshing chart', data);
+    function refresh(data){
+        if (!data || data.length === 0){
+            return;
+        }
+        console.log('refreshing chart', title, data);
+
         // Remove the hour and minute from the date
         labels = data.map(entry => entry.Date.split(' ')[0]);
         labels =  labels.filter((_, i) => i % datapointsDivisor === 0 || i === data.length - 1);
@@ -122,7 +126,7 @@
             },
             maintainAspectRatio: false
         };
-        // console.log("chartData", chartData);
+        console.log("chartData", chartData);
         // console.log("options", options);
         chartData = {...chartDataNew};
     }

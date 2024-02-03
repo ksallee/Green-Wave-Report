@@ -3,59 +3,78 @@
     import { cfsData, cfsDataWhiteWater, cfsDataWicoBeno } from '$lib/stores';
     import CfsChart  from "$lib/components/CfsChart.svelte";
 
+    let firsChart = {
+        title: 'GreenWave Cubic Feet Per Second (CFS) Bend, Oregon',
+        validLabels: ['CFS @ Head of Park'],
+        labelColors: [[46, 82, 108]],
+        displayLegend: false,
+    }
+
+    let secondChart = {
+        title: 'BelowWickiupRes-BenhamFalls-GreenWave CFS',
+        validLabels: ["below_Wickiup_Res", "BENO", "HeadOfPark"],
+        labelColors: [[194, 50, 144], [124, 50, 194], [46, 82, 108]],
+        displayLegend: true,
+    }
+
+    let thirdChart = {
+        title: "BelowWickiupRes-BenhamFalls-CentralOregonCanal-ArnoldCanal-HeadOfPark-LittleDeschutes CFS",
+        validLabels: ["below_Wickiup_Res", "BENO", "CENO", "ARNO", "HeadOfPark", "LAPO"],
+        labelColors: [[194, 50, 50], [124, 50, 194], [194, 50, 144], [50, 194, 144],[46, 82, 108] , [201, 52, 196]],
+        displayLegend: true,
+    }
+
+
+    $: firsChart.data = $cfsData.allData;
+    $: secondChart.data = $cfsDataWhiteWater.allData;
+    $: thirdChart.data = $cfsDataWicoBeno.allData;
+
     onMount(async () => {
         await cfsDataWhiteWater.fetchCsvData();
         await cfsDataWicoBeno.fetchCsvData();
     });
 
-    let cfsCharts = [
-        {
-            title: 'GreenWave Cubic Feet Per Second (CFS) Bend, Oregon',
-            validLabels: ['CFS @ Head of Park'],
-            labelColors: [[46, 82, 108]],
-            displayLegend: false,
-            data: undefined
-        },
-        {
-            title: 'BelowWickiupRes-BenhamFalls-GreenWave CFS',
-            validLabels: ["below_Wickiup_Res", "BENO", "HeadOfPark"],
-            labelColors: [[194, 50, 144], [124, 50, 194], [46, 82, 108]],
-            displayLegend: true,
-            data: undefined
-        },
-        {
-            title: "BelowWickiupRes-BenhamFalls-CentralOregonCanal-ArnoldCanal-HeadOfPark-LittleDeschutes CFS",
-            validLabels: ["below_Wickiup_Res", "BENO", "CENO", "ARNO", "HeadOfPark", "LAPO"],
-            labelColors: [[194, 50, 50], [124, 50, 194], [194, 50, 144], [50, 194, 144],[46, 82, 108] , [201, 52, 196]],
-            displayLegend: true,
-            data: undefined
-        }
-
-    ];
-    $: cfsCharts[0].data = $cfsData.allData;
-    // $: cfsCharts[1].data = $cfsDataWhiteWater.allData;
-    $: cfsCharts[1].data = $cfsDataWhiteWater.allData;
-    $: cfsCharts[2].data = $cfsDataWicoBeno.allData;
 
 
 </script>
 
 <main>
     <div class="container">
-
-        {#each cfsCharts as chart}
-            {#if chart.data}
-                <div class="chart">
-                    <CfsChart
-                        title={chart.title}
-                        validLabels={chart.validLabels}
-                        labelColors={chart.labelColors}
-                        data={chart.data}
-                        displayLegend={chart.displayLegend}
-                    />
-                </div>
-            {/if}
-        {/each}
+        <!--{#each [firsChart, secondChart, thirdChart] as chart}-->
+        {#if firsChart.data}
+            <div class="chart">
+                <CfsChart
+                    title={firsChart.title}
+                    validLabels={firsChart.validLabels}
+                    labelColors={firsChart.labelColors}
+                    data={firsChart.data}
+                    displayLegend={firsChart.displayLegend}
+                />
+            </div>
+        {/if}
+        {#if secondChart.data}
+            <div class="chart">
+                <CfsChart
+                    title={secondChart.title}
+                    validLabels={secondChart.validLabels}
+                    labelColors={secondChart.labelColors}
+                    data={secondChart.data}
+                    displayLegend={secondChart.displayLegend}
+                />
+            </div>
+        {/if}
+        {#if thirdChart.data}
+            <div class="chart">
+                <CfsChart
+                    title={thirdChart.title}
+                    validLabels={thirdChart.validLabels}
+                    labelColors={thirdChart.labelColors}
+                    data={thirdChart.data}
+                    displayLegend={thirdChart.displayLegend}
+                />
+            </div>
+        {/if}
+        <!--{/each}-->
     </div>
 
 </main>
