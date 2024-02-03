@@ -19,8 +19,9 @@
 
     let thirdChart = {
         title: "GreenWave Cubic Feet Per Second (CFS) Bend, Oregon.",
-        subtitle: "BelowWickiupRes-BenhamFalls-CentralOregonCanal-ArnoldCanal-HeadOfPark-LittleDeschutes CFS",
+        // subtitle: "BelowWickiupRes - BenhamFalls (BENO) - CentralOregonCanal (CENO) -ArnoldCanal (ARNO) - HeadOfPark - LittleDeschutes (LAPO)",
         validLabels: ["below_Wickiup_Res", "BENO", "CENO", "ARNO", "HeadOfPark", "LAPO"],
+        niceLabels: ["Below Wickiup Reservoir", "Benham Falls", "Central Oregon Canal", "Arnold Canal", "Head of Park", "Little Deschutes"],
         hiddenLabels: [],
         labelColors: [[194, 50, 50], [124, 50, 194], [194, 50, 144], [50, 194, 144],[46, 82, 108] , [201, 52, 196]],
         displayLegend: true,
@@ -72,6 +73,7 @@
                     title={thirdChart.title}
                     subtitle={thirdChart.subtitle}
                     validLabels={thirdChart.validLabels}
+                    niceLabels={thirdChart.niceLabels}
                     hiddenLabels={thirdChart.hiddenLabels}
                     labelColors={thirdChart.labelColors}
                     data={thirdChart.data}

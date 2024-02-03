@@ -14,6 +14,7 @@
     export let title = '';
     export let subtitle = '';
     export let validLabels = [];
+    export let niceLabels = [];
     export let labelColors = [];
     export let dateOffset = 0;
     export let endDate = new Date();
@@ -86,12 +87,12 @@
         };
         // }
         validLabels.forEach((label, index) => {
-            console.log("label", label, hiddenLabels, hiddenLabels.includes(label));
+            console.log("label", label, hiddenLabels, hiddenLabels.includes(label), niceLabels, niceLabels[index]);
             const labelData = data.map(entry => entry[label]);
             const filteredLabelData = labelData.filter((_, i) => i % datapointsDivisor === 0 || i === data.length - 1);
 
             chartDataNew.datasets.push({
-            label,
+            label: niceLabels[index],
             data: filteredLabelData,
             borderColor: getRgbColorStr(labelColors[index]),
             backgroundColor: getRgbColorStr(adjustColor(labelColors[index], 0.5)),
