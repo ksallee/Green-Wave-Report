@@ -11,7 +11,8 @@
     ChartJS.defaults.borderColor = '#eae9e9'
 
 
-    export let title = 'GreenWave Cubic Feet Per Second (CFS) Bend, Oregon';
+    export let title = '';
+    export let subtitle = '';
     export let validLabels = [];
     export let labelColors = [];
     export let dateOffset = 0;
@@ -19,6 +20,7 @@
     export let datapointsDivisor = 70;
     export let data = [];
     export let displayLegend = false;
+    export let hiddenLabels = [];
 
     $: refresh(data);
 
@@ -84,15 +86,19 @@
         };
         // }
         validLabels.forEach((label, index) => {
+            console.log("label", label, hiddenLabels, hiddenLabels.includes(label));
             const labelData = data.map(entry => entry[label]);
             const filteredLabelData = labelData.filter((_, i) => i % datapointsDivisor === 0 || i === data.length - 1);
+
             chartDataNew.datasets.push({
-                label,
-                data: filteredLabelData,
-                borderColor: getRgbColorStr(labelColors[index]),
-                backgroundColor: getRgbColorStr(adjustColor(labelColors[index], 0.5)),
-                tension: 0.1,
-                borderWidth: 2
+            label,
+            data: filteredLabelData,
+            borderColor: getRgbColorStr(labelColors[index]),
+            backgroundColor: getRgbColorStr(adjustColor(labelColors[index], 0.5)),
+            tension: 0.1,
+            borderWidth: 2,
+            // hidden if label is in hiddenLabels
+            hidden: hiddenLabels.includes(label) || filteredLabelData.every(x => x == 0),
             });
 
         });
@@ -136,8 +142,12 @@
 </script>
 {#if chartData && options}
     <h1 in:fade>{title}</h1>
+    {#if subtitle}
+        <h4 in:fade>{subtitle}</h4>
+    {/if}
     <div class="container" in:fade>
         <Line data={chartData} {options} plugins={[canvasBackgroundPlugin]} />
+
     </div>
 {/if}
 
@@ -150,9 +160,10 @@
         width: 100%;
         height: 100%;
     }
-    h1{
+    h1, h4{
         color: #f8f8f8;
         margin-bottom: 20px;
+        text-align: center;
     }
     @media (max-width: 900px) {
         .container{
