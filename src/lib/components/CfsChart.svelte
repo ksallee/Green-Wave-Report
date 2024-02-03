@@ -74,7 +74,7 @@
         // Iterate over the labels but also over the filtered data (datapointsDivisor)
         // So that we can get a min and max value for the Y-axis
         // if (!chartData){
-        chartData = {
+        let chartDataNew = {
             labels,
             datasets: []
         };
@@ -82,7 +82,7 @@
         validLabels.forEach((label, index) => {
             const labelData = data.map(entry => entry[label]);
             const filteredLabelData = labelData.filter((_, i) => i % datapointsDivisor === 0 || i === data.length - 1);
-            chartData.datasets.push({
+            chartDataNew.datasets.push({
                 label,
                 data: filteredLabelData,
                 borderColor: getRgbColorStr(labelColors[index]),
@@ -124,8 +124,7 @@
         };
         // console.log("chartData", chartData);
         // console.log("options", options);
-        chartData = {...chartData};
-        options = {...options};
+        chartData = {...chartDataNew};
     }
 
 
