@@ -36,6 +36,6 @@ jobs:
           git config --global user.name 'Kevin Sallée'
           git config --global user.email 'kevin.sallee@gpltech.com'
           git remote set-url origin https://github.com/ksallee/Green-Wave-Report.git
-          git add static/GREENWAVE_Year.csv
+          git add static/.
           git commit -m "Update CSV data" -a || echo "No changes to commit"
           git push
