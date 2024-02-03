@@ -131,10 +131,12 @@
 
 
 </script>
-<h1>{title}</h1>
-<div class="container" in:fade>
-    <Line data={chartData} {options} plugins={[canvasBackgroundPlugin]} />
-</div>
+{#if chartData && options}
+    <h1 in:fade>{title}</h1>
+    <div class="container" in:fade>
+        <Line data={chartData} {options} plugins={[canvasBackgroundPlugin]} />
+    </div>
+{/if}
 
 <style>
     .container{

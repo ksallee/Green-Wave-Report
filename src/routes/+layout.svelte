@@ -18,7 +18,7 @@
     $:refreshSiteColor($cfsData);
 
     onMount(async () => {
-        await cfsData.fetchCsvData('https://www.gwsr2024.xyz/surf/GREENWAVE_Year.csv');
+        await cfsData.fetchCsvData();
     });
 
     function handleScroll() {
