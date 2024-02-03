@@ -66,10 +66,11 @@
         min-height: 100vh;
         height: auto;
         border: 0;
-        padding: 0;
+        padding: 0 0 200px 0;
         position: relative;
-        padding-bottom: 200px;
+        margin: 0;
     }
+
     :global(body){
         margin: 0px;
         padding: 0px;

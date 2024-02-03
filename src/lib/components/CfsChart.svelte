@@ -10,6 +10,7 @@
     ChartJS.defaults.color = '#eae9e9'
     ChartJS.defaults.borderColor = '#eae9e9'
 
+
     export let title = 'GreenWave Cubic Feet Per Second (CFS) Bend, Oregon';
     export let validLabels = [];
     export let labelColors = [];
@@ -114,6 +115,8 @@
             plugins: {
                 legend: {
                     display: displayLegend,
+
+
                 },
 
             },
@@ -128,22 +131,16 @@
 
 
 </script>
-
+<h1>{title}</h1>
 <div class="container" in:fade>
-    <div class="chart-container">
-        <h1>{title}</h1>
-        <Line bind:data={chartData} {options} plugins={[canvasBackgroundPlugin]} width={400} height={200} />
-    </div>
+    <Line bind:data={chartData} {options} plugins={[canvasBackgroundPlugin]} />
 </div>
 
 <style>
     .container{
-        /*background-color: #f6f5f5;*/
         display: flex;
         justify-content: flex-start;
         align-items: center;
-        /*margin: 30px auto;*/
-        /*padding: 0 20px;*/
         flex-direction: column;
         width: 100%;
         height: 100%;
@@ -152,15 +149,7 @@
         color: #f8f8f8;
         margin-bottom: 20px;
     }
-    .chart-container{
-        width: 50%;
-        height: 60vh;
-    }
     @media (max-width: 900px) {
-        .chart-container{
-            width: 95%;
-            height: 40vh;
-        }
         .container{
             margin: 2px auto;
             padding: 2px;

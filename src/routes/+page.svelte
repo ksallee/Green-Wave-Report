@@ -69,15 +69,14 @@
         margin: 0!important;
     }
     .container{
-        width: 100vw;
         height: 100vh;
         display: flex;
         justify-content: center;
         align-items: center;
+        position: relative;
     }
 
     .card {
-        padding: 2rem;
         text-align: center;
         box-sizing: border-box;
         width: 33vw;

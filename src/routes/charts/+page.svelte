@@ -27,7 +27,7 @@
         {
             title: "BelowWickiupRes-BenhamFalls-CentralOregonCanal-ArnoldCanal-HeadOfPark-LittleDeschutes CFS",
             validLabels: ["below_Wickiup_Res", "BENO", "CENO", "ARNO", "HeadOfPark", "LAPO"],
-            labelColors: [[46, 82, 108], [124, 50, 194], [194, 50, 144], [50, 194, 144], [194, 50, 50], [50, 50, 194]],
+            labelColors: [[46, 82, 108], [124, 50, 194], [194, 50, 144], [50, 194, 144], [194, 50, 50], [201, 52, 196]],
             displayLegend: true,
             data: undefined
         }
@@ -44,15 +44,17 @@
 <main>
     <div class="container">
 
-        {#each cfsCharts as chart, i}
+        {#each cfsCharts as chart}
             {#if chart.data}
-                <CfsChart
-                    title={chart.title}
-                    validLabels={chart.validLabels}
-                    labelColors={chart.labelColors}
-                    bind:data={chart.data}
-                    displayLegend={chart.displayLegend}
-                />
+                <div class="chart">
+                    <CfsChart
+                        title={chart.title}
+                        validLabels={chart.validLabels}
+                        labelColors={chart.labelColors}
+                        bind:data={chart.data}
+                        displayLegend={chart.displayLegend}
+                    />
+                </div>
             {/if}
         {/each}
     </div>
@@ -65,6 +67,11 @@
         flex-direction: column;
         align-items: center;
         gap: 120px;
+    }
+    .chart {
+        width: 100%;
+        max-width: 1000px;
+        height: 70vh;
     }
 
     </style>

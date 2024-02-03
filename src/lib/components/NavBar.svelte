@@ -61,8 +61,8 @@
     display: flex;
     align-items: center;
     gap: 1rem;
-    margin: auto;
-      padding: 0rem 1rem;
+    margin: 0px 0 0 5px;
+      padding-top: 10px;
   }
   .link{
     /*color: #f2f2f3;*/
@@ -85,7 +85,7 @@
     width: 100%;
     height: 20px;
     margin-bottom: 0.5rem;
-    padding: .5rem 0rem;
+    padding: 0;
     z-index: 1000;
   }
   @media (max-width:700px)  {
