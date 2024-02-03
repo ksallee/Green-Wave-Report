@@ -1,11 +1,13 @@
 <script>
     import NavBar from "$lib/components/NavBar.svelte";
     import { cfsData } from "$lib/stores";
+    import {getRgbColorStr} from "$lib/utils";
     import {tweened} from "svelte/motion";
     import {cubicOut} from "svelte/easing";
     import {onMount} from "svelte";
+    import {colors} from "$lib/constants";
     // Initialize siteColor with a default color
-    let siteColor = tweened($cfsData.color, {
+    let siteColor = tweened($cfsData.color?$cfsData.color:colors.red, {
         duration: 300,
         easing: cubicOut
     });
@@ -32,7 +34,6 @@
 
     function refreshSiteColor(data) {
         siteColor.set($cfsData.color);
-        console.log('siteColor', $cfsData.color);
     }
 </script>
 
@@ -53,7 +54,7 @@
     </style>
 </svelte:head>
 
-<div class="container" style="--site-color: {cfsData.getRgbColorStr($siteColor)};">
+<div class="container" style="--site-color: {getRgbColorStr($siteColor)};">
     <NavBar showNav={showNav} color={$siteColor}/>
     <slot/>
 </div>

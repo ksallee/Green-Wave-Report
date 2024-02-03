@@ -1,11 +1,11 @@
 <script>
   import { fly } from "svelte/transition";
-  import { cfsData } from "$lib/stores";
+  import { adjustColor, getRgbColorStr } from "$lib/utils";
   import {onMount} from "svelte";
 
   export let color = "white";
-  $: selectedColor = cfsData.getRgbColorStr(cfsData.adjustColor(color, 0.1));
-  $: normalColor = cfsData.getRgbColorStr(cfsData.adjustColor(color, 0.3));
+  $: selectedColor = getRgbColorStr(adjustColor(color, 0.1));
+  $: normalColor = getRgbColorStr(adjustColor(color, 0.3));
 
   let navItems = [
       { label: "Home", href: "/", selected: false },
