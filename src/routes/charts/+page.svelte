@@ -2,6 +2,8 @@
     import { onMount } from 'svelte';
     import { cfsData, cfsDataWhiteWater, cfsDataWicoBeno } from '$lib/stores';
     import CfsChart  from "$lib/components/CfsChart.svelte";
+    import RangeSlider from "svelte-range-slider-pips";
+
 
     // let firsChart = {
     //     title: 'GreenWave Cubic Feet Per Second (CFS) Bend, Oregon',
@@ -26,16 +28,45 @@
         labelColors: [[194, 50, 50], [25, 128, 97], [194, 50, 144], [50, 194, 144],[46, 82, 108] , [201, 52, 196]],
         displayLegend: true,
     }
+    let chartData = [];
+    let minDate = undefined;
+    let maxDate = undefined;
+    let nbDays = 0;
 
 
     // $: firsChart.data = $cfsData.allData;
     // $: secondChart.data = $cfsDataWhiteWater.allData;
-    $: thirdChart.data = $cfsDataWicoBeno.allData;
+    $: refresh($cfsDataWicoBeno.allData);
+
+    function refresh(data) {
+        if(!data|| data.length === 0) return;
+        chartData = [...$cfsDataWicoBeno.allData];
+        thirdChart.firstDate = data[0].Date;
+        thirdChart.lastDate = data[data.length - 1].Date;
+        nbDays = Math.floor((new Date(thirdChart.lastDate) - new Date(thirdChart.firstDate)) / (1000 * 60 * 60 * 24));
+        thirdChart.daysRange = [0, nbDays];
+    }
 
     onMount(async () => {
         await cfsDataWhiteWater.fetchCsvData();
         await cfsDataWicoBeno.fetchCsvData();
+
     });
+  const currency = new Intl.NumberFormat( "de", { style: 'currency', currency: 'EUR' });
+  const formatter = (value) => {
+    // add value to thirdChart.firstDate
+    const date = new Date(thirdChart.firstDate);
+
+    date.setDate(date.getDate() + value);
+    return date.toDateString();
+  }
+  function dateRangeChanged(event) {
+    const [min, max] = event.detail.values;
+    minDate = new Date(thirdChart.firstDate);
+    maxDate = new Date(thirdChart.firstDate);
+    minDate.setDate(minDate.getDate() + min);
+    maxDate.setDate(maxDate.getDate() + max);
+  }
 
 
 </script>
@@ -67,7 +98,8 @@
         <!--        />-->
         <!--    </div>-->
         <!--{/if}-->
-        {#if thirdChart.data}
+        {#if chartData && thirdChart.daysRange}
+
             <div class="chart">
                 <CfsChart
                     title={thirdChart.title}
@@ -76,10 +108,14 @@
                     niceLabels={thirdChart.niceLabels}
                     hiddenLabels={thirdChart.hiddenLabels}
                     labelColors={thirdChart.labelColors}
-                    data={thirdChart.data}
+                    data={chartData}
                     displayLegend={thirdChart.displayLegend}
+                    bind:minDate
+                    bind:maxDate
                 />
+                <RangeSlider {formatter} float pips bind:values={thirdChart.daysRange} max={nbDays} range on:change={dateRangeChanged} />
             </div>
+
         {/if}
         <!--{/each}-->
     </div>

@@ -64,6 +64,9 @@ devDependencies:
   svelte:
     specifier: ^4.2.7
     version: 4.2.9
+  svelte-range-slider-pips:
+    specifier: ^2.3.1
+    version: 2.3.1
   vite:
     specifier: ^5.0.3
     version: 5.0.12
@@ -1823,6 +1826,10 @@ packages:
       svelte: ^3.19.0 || ^4.0.0
     dependencies:
       svelte: 4.2.9
+    dev: true
+
+  /svelte-range-slider-pips@2.3.1:
+    resolution: {integrity: sha512-P29PNqHld+SiaDuHzf98rLvhSYWXb3TVL9p7U5RG9UX8emUgypZgp9zuIIwpmIXysGQC6JG8duMc5FuaPnSVdg==}
     dev: true
 
   /svelte@4.2.9:
