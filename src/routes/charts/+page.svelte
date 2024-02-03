@@ -33,8 +33,7 @@
         await cfsDataWhiteWater.fetchCsvData();
         await cfsDataWicoBeno.fetchCsvData();
     });
-
-
+    
 
 </script>
 
