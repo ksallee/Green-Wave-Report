@@ -3,9 +3,12 @@
     import { adjustColor, getRgbColorStr } from "$lib/utils";
     import {onMount} from "svelte";
 
-    export let color = "white";
-    $: selectedColor = getRgbColorStr(adjustColor(color, 0.1));
-    $: normalColor = getRgbColorStr(adjustColor(color, 0.3));
+    export let color = undefined;
+    $: normalColor = getRgbColorStr(color);
+    $: selectedColor = normalColor;
+    // $: selectedColor = getRgbColorStr(adjustColor(color, 0.5));
+    // $: console.log("color", getRgbColorStr(color), "selectedColor", selectedColor);
+
 
     let navItems = [
         { label: "Home", href: "/", selected: false },

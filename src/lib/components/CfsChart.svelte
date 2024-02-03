@@ -7,8 +7,8 @@
     import {adjustColor, getRgbColorStr} from "../../lib/utils";
 
     ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Filler, Legend);
-    ChartJS.defaults.color = '#eae9e9'
-    ChartJS.defaults.borderColor = '#eae9e9'
+    ChartJS.defaults.color = '#111'
+    ChartJS.defaults.borderColor = '#111'
 
 
     export let title = '';
@@ -204,7 +204,7 @@ function refreshDateRange(minDate, maxDate){
         height: 85%;
     }
     h1, h4{
-        color: #f8f8f8;
+        color: #111;
         margin-bottom: 20px;
         text-align: center;
     }

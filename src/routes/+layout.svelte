@@ -7,8 +7,14 @@
     import {cubicOut} from "svelte/easing";
     import {onMount} from "svelte";
     import {colors} from "$lib/constants";
+    import {navigating, page} from '$app/stores';
+    import {adjustColor} from "$lib/utils.js";
     // Initialize siteColor with a default color
     let siteColor = tweened($cfsData.color?$cfsData.color:colors.red, {
+        duration: 300,
+        easing: cubicOut
+    });
+    let textColor = tweened([10, 10, 10], {
         duration: 300,
         easing: cubicOut
     });
@@ -16,7 +22,7 @@
     let newY = 0;
     let showNav = true;
     $:handleScroll(y);
-    $:refreshSiteColor($cfsData);
+    $:refreshSiteColor($cfsData, $navigating);
 
     onMount(async () => {
         await cfsData.fetchCsvData();
@@ -34,7 +40,19 @@
     }
 
     function refreshSiteColor(data) {
-        siteColor.set($cfsData.color);
+        let path = $page.url.pathname;
+        console.log("path", path);
+        if (path === "/") {
+            siteColor.set($cfsData.color);
+            const tc = adjustColor($cfsData.color, 0.3);
+            textColor.set(tc);
+            console.log("text color", tc, getRgbColorStr($textColor))
+        }
+        else{
+            siteColor.set([250, 250, 250]);
+            textColor.set([10, 10, 10]);
+            console.log("text color white", $textColor)
+        }
     }
 </script>
 
@@ -56,7 +74,7 @@
 </svelte:head>
 
 <Body style="--site-color: {getRgbColorStr($siteColor)};" />
-<NavBar showNav={showNav} color={$siteColor}/>
+<NavBar showNav={showNav} color={$textColor}/>
 <slot/>
 
 <style>
