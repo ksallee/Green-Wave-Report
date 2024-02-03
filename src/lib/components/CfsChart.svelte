@@ -133,7 +133,7 @@
 </script>
 <h1>{title}</h1>
 <div class="container" in:fade>
-    <Line bind:data={chartData} {options} plugins={[canvasBackgroundPlugin]} />
+    <Line data={chartData} {options} plugins={[canvasBackgroundPlugin]} />
 </div>
 
 <style>
