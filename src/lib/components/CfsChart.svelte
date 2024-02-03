@@ -91,7 +91,7 @@ function refreshDateRange(minDate, maxDate){
     }
 
     // Update labels
-    chart.data.labels = labels.slice(minDateIndex, maxDateIndex + 1);
+    chart.data.labels = [...labels.slice(minDateIndex, maxDateIndex + 1)];
 
     // Update datasets
     chart.data.datasets.forEach((dataset, index) => {
@@ -121,6 +121,7 @@ function refreshDateRange(minDate, maxDate){
             labels,
             datasets: []
         };
+        datasets = []
         // }
         validLabels.forEach((label, index) => {
             const labelData = data.map(entry => entry[label]);
