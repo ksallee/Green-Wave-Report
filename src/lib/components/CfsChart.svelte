@@ -3,7 +3,7 @@
     import {fade} from 'svelte/transition';
     import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Filler, Legend } from 'chart.js';
 
-    import { colors, thresholds, thresholdColors } from "$lib/constants";
+    import { colors, thresholdColors } from "$lib/constants";
     import {adjustColor, getRgbColorStr} from "../../lib/utils";
 
     ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Filler, Legend);
@@ -17,15 +17,13 @@
     export let endDate = new Date();
     export let datapointsDivisor = 70;
     export let data = [];
-    export let maxYOffset = 50;
+    export let displayLegend = false;
 
     $: refresh(title, validLabels, dateOffset, endDate, datapointsDivisor, data);
 
     let labels = []; // Dates for the X-axis
     let chartData = undefined
     let options = {}
-    let maxYValue = 0;
-    let minYValue = 1000;
 
 
 
@@ -36,8 +34,8 @@
 
             function bgColors(ymin, ymax, color) {
                 // from should never be
-                const from = y.getPixelForValue(Math.max(ymin, minYValue - 20));
-                const to = y.getPixelForValue(Math.min(ymax, maxYValue + 5));
+                const from = y.getPixelForValue(ymin);
+                const to = y.getPixelForValue(ymax);
                 ctx.save();
                 ctx.fillStyle = `rgba(${color[0]}, ${color[1]}, ${color[2]}, 1)`;
                 ctx.fillRect(left, to, right - left, from - to);
@@ -48,19 +46,19 @@
             // color name as the key and the minY and maxY as the value
             Object.entries(thresholdColors).forEach(([colorName, [ymin, ymax]], index) => {
                 let adjustedMinY = 0;
-                if (index !== 0) {
-                    adjustedMinY = Math.max(ymin, minYValue) - 2;
+                if (index === 0){
+                    adjustedMinY = y.min;
                 }
-                const adjustedMaxY = Math.min(ymax, maxYValue) + 5;
+                else{
+                    adjustedMinY = ymin;
+                }
+                const adjustedMaxY = Math.min(ymax, y.max);
                 const color = colors[colorName]; // Assuming 'colors' is an object mapping color names to RGB values
-                console.log("color", color, "min", ymin, "max", ymax, "adjustedMinY", adjustedMinY, "adjustedMaxY", adjustedMaxY);
                 if (adjustedMinY < adjustedMaxY){
                     bgColors(adjustedMinY, adjustedMaxY, color);
                 }
 
-            })
-
-
+            });
         }
     };
 
@@ -83,17 +81,6 @@
         validLabels.forEach((label, index) => {
             const labelData = data.map(entry => entry[label]);
             const filteredLabelData = labelData.filter((_, i) => i % datapointsDivisor === 0 || i === data.length - 1);
-            const maxLabelValue = Math.max(...filteredLabelData);
-            const minLabelValue = Math.min(...filteredLabelData);
-            console.log("label", label);
-            console.log("maxLabelValue", maxLabelValue);
-            console.log("minLabelValue", minLabelValue);
-            if (maxLabelValue + maxYOffset > maxYValue) {
-                maxYValue = maxLabelValue + maxYOffset;
-            }
-            if (minLabelValue < minYValue) {
-                minYValue = minLabelValue;
-            }
             chartData.datasets.push({
                 label,
                 data: filteredLabelData,
@@ -122,14 +109,11 @@
                 },
                 y: {
                     beginAtZero: false,
-                    suggestedMax: maxYValue,
-                    suggestedMin: minYValue,
-
                 }
             },
             plugins: {
                 legend: {
-                    display: false
+                    display: displayLegend,
                 },
 
             },
@@ -147,7 +131,7 @@
 
 <div class="container" in:fade>
     <div class="chart-container">
-        <h1>GreenWave Cubic Feet Per Second (CFS) Bend, Oregon</h1>
+        <h1>{title}</h1>
         <Line bind:data={chartData} {options} plugins={[canvasBackgroundPlugin]} width={400} height={200} />
     </div>
 </div>
@@ -158,14 +142,15 @@
         display: flex;
         justify-content: flex-start;
         align-items: center;
-        margin: 30px auto;
-        padding: 20px;
+        /*margin: 30px auto;*/
+        /*padding: 0 20px;*/
         flex-direction: column;
         width: 100%;
         height: 100%;
     }
     h1{
         color: #f8f8f8;
+        margin-bottom: 20px;
     }
     .chart-container{
         width: 50%;

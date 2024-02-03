@@ -63,10 +63,12 @@
         background-color: var(--site-color, #f08080); /* Default to soft red */;
         transition: background-color 0.4s ease-out; /* Smooth transition for background color change */
         width: 100%;
-        height: 100%;
+        min-height: 100vh;
+        height: auto;
         border: 0;
         padding: 0;
-        position: fixed;
+        position: relative;
+        padding-bottom: 200px;
     }
     :global(body){
         margin: 0px;
