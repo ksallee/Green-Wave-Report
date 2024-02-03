@@ -1,5 +1,6 @@
 <script>
     import NavBar from "$lib/components/NavBar.svelte";
+    import { Body } from 'svelte-body';
     import { cfsData } from "$lib/stores";
     import {getRgbColorStr} from "$lib/utils";
     import {tweened} from "svelte/motion";
@@ -54,26 +55,16 @@
     </style>
 </svelte:head>
 
-<div class="container" style="--site-color: {getRgbColorStr($siteColor)};">
-    <NavBar showNav={showNav} color={$siteColor}/>
-    <slot/>
-</div>
-<style>
-    .container{
-        background-color: var(--site-color, #f08080); /* Default to soft red */;
-        transition: background-color 0.4s ease-out; /* Smooth transition for background color change */
-        width: 100%;
-        min-height: 100vh;
-        height: auto;
-        border: 0;
-        padding: 0 0 200px 0;
-        position: relative;
-        margin: 0;
-    }
+<Body style="--site-color: {getRgbColorStr($siteColor)};" />
+<NavBar showNav={showNav} color={$siteColor}/>
+<slot/>
 
+<style>
     :global(body){
         margin: 0px;
         padding: 0px;
+        background-color: var(--site-color, #f08080); /* Default to soft red */;
+        transition: background-color 0.4s ease-out; /* Smooth transition for background color change */
     }
     :global(a) {
         all: unset;

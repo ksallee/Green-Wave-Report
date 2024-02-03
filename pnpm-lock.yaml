@@ -64,6 +64,9 @@ devDependencies:
   svelte:
     specifier: ^4.2.7
     version: 4.2.9
+  svelte-body:
+    specifier: ^1.4.0
+    version: 1.4.0(svelte@4.2.9)
   svelte-range-slider-pips:
     specifier: ^2.3.1
     version: 2.3.1
@@ -711,6 +714,11 @@ packages:
       date-fns: 3.3.1
     dev: false
 
+  /clsx@1.2.1:
+    resolution: {integrity: sha512-EcR6r5a8bj6pu3ycsa/E/cKVGuTgZJZdsyUYHOksG/UHIiKfjxzRxYJpyVBwYaQeOvghal9fcc4PidlgzugAQg==}
+    engines: {node: '>=6'}
+    dev: true
+
   /code-red@1.0.4:
     resolution: {integrity: sha512-7qJWqItLA8/VPVlKJlFXU+NBlo/qyfs39aJcuMT/2ere32ZqvF5OSxgdM5xOfJJ7O429gg2HM47y8v9P+9wrNw==}
     dependencies:
@@ -765,6 +773,10 @@ packages:
     resolution: {integrity: sha512-/Tb/JcjK111nNScGob5MNtsntNM1aCNUDipB/TkwZFhyDrrE47SOx/18wF2bbjgc3ZzCSKW1T5nt5EbFoAz/Vg==}
     engines: {node: '>=4'}
     hasBin: true
+    dev: true
+
+  /csstype@3.1.3:
+    resolution: {integrity: sha512-M1uQkMl8rQK/szD0LNhtqxIPLpimGm8sOBwU7lLnCpSbTyY3yeU1Vc7l4KT5zT4s/yOxHH5O7tIuuLOCnLADRw==}
     dev: true
 
   /d3-array@3.2.4:
@@ -1790,6 +1802,16 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       has-flag: 4.0.0
+    dev: true
+
+  /svelte-body@1.4.0(svelte@4.2.9):
+    resolution: {integrity: sha512-OCxtAozo/HaS57AZJOoARJHrOabjjhob1sLW8JgG+rrvHY0AZquf2Qcn9PT+jpVh9Y6DVNMMMSB1CZxQk5rrPw==}
+    peerDependencies:
+      svelte: ^3.47.0 || ^4.0.0
+    dependencies:
+      clsx: 1.2.1
+      csstype: 3.1.3
+      svelte: 4.2.9
     dev: true
 
   /svelte-chartjs@3.1.4(chart.js@4.4.1)(svelte@4.2.9):

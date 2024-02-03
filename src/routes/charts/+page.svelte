@@ -19,9 +19,8 @@
     //     displayLegend: true,
     // }
 
-    let thirdChart = {
+    let cfsChart = {
         title: "GreenWave Cubic Feet Per Second (CFS) Bend, Oregon.",
-        // subtitle: "BelowWickiupRes - BenhamFalls (BENO) - CentralOregonCanal (CENO) -ArnoldCanal (ARNO) - HeadOfPark - LittleDeschutes (LAPO)",
         validLabels: ["below_Wickiup_Res", "BENO", "CENO", "ARNO", "HeadOfPark", "LAPO"],
         niceLabels: ["Below Wickiup Reservoir", "Benham Falls", "Central Oregon Canal", "Arnold Canal", "Head of Park", "Little Deschutes"],
         hiddenLabels: [],
@@ -41,10 +40,10 @@
     function refresh(data) {
         if(!data|| data.length === 0) return;
         chartData = [...$cfsDataWicoBeno.allData];
-        thirdChart.firstDate = data[0].Date;
-        thirdChart.lastDate = data[data.length - 1].Date;
-        nbDays = Math.floor((new Date(thirdChart.lastDate) - new Date(thirdChart.firstDate)) / (1000 * 60 * 60 * 24));
-        thirdChart.daysRange = [0, nbDays];
+        cfsChart.firstDate = data[0].Date;
+        cfsChart.lastDate = data[data.length - 1].Date;
+        nbDays = Math.floor((new Date(cfsChart.lastDate) - new Date(cfsChart.firstDate)) / (1000 * 60 * 60 * 24));
+        cfsChart.daysRange = [0, nbDays];
     }
 
     onMount(async () => {
@@ -52,18 +51,17 @@
         await cfsDataWicoBeno.fetchCsvData();
 
     });
-  const currency = new Intl.NumberFormat( "de", { style: 'currency', currency: 'EUR' });
   const formatter = (value) => {
-    // add value to thirdChart.firstDate
-    const date = new Date(thirdChart.firstDate);
+    // add value to cfsChart.firstDate
+    const date = new Date(cfsChart.firstDate);
 
     date.setDate(date.getDate() + value);
     return date.toDateString();
   }
   function dateRangeChanged(event) {
     const [min, max] = event.detail.values;
-    minDate = new Date(thirdChart.firstDate);
-    maxDate = new Date(thirdChart.firstDate);
+    minDate = new Date(cfsChart.firstDate);
+    maxDate = new Date(cfsChart.firstDate);
     minDate.setDate(minDate.getDate() + min);
     maxDate.setDate(maxDate.getDate() + max);
   }
@@ -71,68 +69,60 @@
 
 </script>
 
-<main>
-    <div class="container">
-        <!--{#each [firsChart, secondChart, thirdChart] as chart}-->
-        <!--{#if firsChart.data}-->
-        <!--    <div class="chart">-->
-        <!--        <CfsChart-->
-        <!--            title={firsChart.title}-->
-        <!--            validLabels={firsChart.validLabels}-->
-        <!--            hiddenLabels={firsChart.hiddenLabels}-->
-        <!--            labelColors={firsChart.labelColors}-->
-        <!--            data={firsChart.data}-->
-        <!--            displayLegend={firsChart.displayLegend}-->
-        <!--        />-->
-        <!--    </div>-->
-        <!--{/if}-->
-        <!--{#if secondChart.data}-->
-        <!--    <div class="chart">-->
-        <!--        <CfsChart-->
-        <!--            title={secondChart.title}-->
-        <!--            validLabels={secondChart.validLabels}-->
-        <!--            hiddenLabels={secondChart.hiddenLabels}-->
-        <!--            labelColors={secondChart.labelColors}-->
-        <!--            data={secondChart.data}-->
-        <!--            displayLegend={secondChart.displayLegend}-->
-        <!--        />-->
-        <!--    </div>-->
-        <!--{/if}-->
-        {#if chartData && thirdChart.daysRange}
+<div class="container">
+    {#if chartData && cfsChart.daysRange}
 
-            <div class="chart">
-                <CfsChart
-                    title={thirdChart.title}
-                    subtitle={thirdChart.subtitle}
-                    validLabels={thirdChart.validLabels}
-                    niceLabels={thirdChart.niceLabels}
-                    hiddenLabels={thirdChart.hiddenLabels}
-                    labelColors={thirdChart.labelColors}
-                    data={chartData}
-                    displayLegend={thirdChart.displayLegend}
-                    bind:minDate
-                    bind:maxDate
-                />
-                <RangeSlider {formatter} float pips bind:values={thirdChart.daysRange} max={nbDays} range on:change={dateRangeChanged} />
-            </div>
+        <div class="chart">
+            <CfsChart
+                title={cfsChart.title}
+                subtitle={cfsChart.subtitle}
+                validLabels={cfsChart.validLabels}
+                niceLabels={cfsChart.niceLabels}
+                hiddenLabels={cfsChart.hiddenLabels}
+                labelColors={cfsChart.labelColors}
+                data={chartData}
+                displayLegend={cfsChart.displayLegend}
+                bind:minDate
+                bind:maxDate
+            />
+        </div>
+        <div class="range-slider">
+            <RangeSlider {formatter} bind:values={cfsChart.daysRange} max={nbDays} range on:change={dateRangeChanged} />
+        </div>
 
-        {/if}
-        <!--{/each}-->
-    </div>
+    {/if}
+    <!--{/each}-->
+</div>
 
-</main>
 
 <style>
     .container {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 120px;
+        justify-items: center;
+        max-width: 100vw;
+        box-sizing: border-box;
+        /*overflow-x: hidden;*/
+        height: 100%;
+    }
+    .range-slider {
+        width: 100%;
+        padding: 0 0 0 25px;
+        margin: 0;
+        max-width: 980px;
     }
     .chart {
         width: 100%;
         max-width: 1000px;
         height: 70vh;
+        /*background-color: blue;*/
+    }
+    @media (max-width: 600px) {
+        .range-slider{
+            width: 95%;
+        }
+
     }
 
     </style>

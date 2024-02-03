@@ -43,37 +43,29 @@
 <div class="container" in:fade>
     <div class="card" >
         {#if $cfsData.lastEntry}
-            <h1>GreenWave Cubic Feet per Second (CFS)</h1>
+            <h1>CFS @ Head of Park</h1>
             <h2>{$cfsValue.toFixed(0)}</h2>
-            <p>
-                <span class="label">Date:</span> <span class="value">{$formattedDate}</span>
-            </p>
-            <p class="value">Measured at Head of Park</p>
+
         {/if}
     </div>
+    {#if $formattedDate}
+        <p>
+            <span class="label">Date:</span> <span class="value">{$formattedDate}</span>
+        </p>
+    {/if}
 </div>
 
 
 <style>
-    /* Centering the card with Flexbox */
-    body, html {
-        margin: 0;
-        padding: 0;
-        height: 100vh; /* Adjust to ensure full height utilization */
-        display: flex;
-        justify-content: center;
-        align-items: center;
 
-    }
-    p {
-        margin: 0!important;
-    }
     .container{
-        height: 100vh;
+        height: calc(100vh - 45px);
         display: flex;
         justify-content: center;
         align-items: center;
         position: relative;
+        width:100%;
+        flex-direction: column;
     }
 
     .card {
@@ -88,11 +80,12 @@
 
     h1, h2, p {
         color: #ffffff; /* White text for contrast */
-        margin: 0.5rem 0;
+        margin: 0;
         font-weight: 400;
     }
     h2{
         font-weight: 700;
+        font-size: 5rem!important;
     }
     .value {
         font-size: 14px
@@ -112,6 +105,7 @@
     p {
         font-size: 1.25rem; /* Slightly larger paragraph text for clarity */
         margin-bottom: 1rem; /* Extra space at the bottom */
+        justify-self: flex-end;
     }
     @media (max-width: 1000px) {
         .card {

@@ -199,7 +199,9 @@ function refreshDateRange(minDate, maxDate){
         align-items: center;
         flex-direction: column;
         width: 100%;
-        height: 100%;
+        box-sizing: border-box;
+
+        height: 85%;
     }
     h1, h4{
         color: #f8f8f8;
