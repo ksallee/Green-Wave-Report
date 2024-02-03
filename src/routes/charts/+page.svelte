@@ -51,7 +51,7 @@
                         title={chart.title}
                         validLabels={chart.validLabels}
                         labelColors={chart.labelColors}
-                        bind:data={chart.data}
+                        data={chart.data}
                         displayLegend={chart.displayLegend}
                     />
                 </div>
