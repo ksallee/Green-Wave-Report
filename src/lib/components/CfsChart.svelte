@@ -64,7 +64,7 @@
     };
 
     function refresh(title, validLabels, dateOffset, endDate, datapointsDivisor, data){
-        console.log('refreshing chart', data);
+        // console.log('refreshing chart', data);
         // Remove the hour and minute from the date
         labels = data.map(entry => entry.Date.split(' ')[0]);
         labels =  labels.filter((_, i) => i % datapointsDivisor === 0 || i === data.length - 1);
@@ -122,8 +122,8 @@
             },
             maintainAspectRatio: false
         };
-        console.log("chartData", chartData);
-        console.log("options", options);
+        // console.log("chartData", chartData);
+        // console.log("options", options);
         chartData = {...chartData};
         options = {...options};
     }

@@ -20,14 +20,14 @@
         {
             title: 'BelowWickiupRes-BenhamFalls-GreenWave CFS',
             validLabels: ["below_Wickiup_Res", "BENO", "HeadOfPark"],
-            labelColors: [[46, 82, 108], [124, 50, 194], [194, 50, 144]],
+            labelColors: [[194, 50, 144], [124, 50, 194], [46, 82, 108]],
             displayLegend: true,
             data: undefined
         },
         {
             title: "BelowWickiupRes-BenhamFalls-CentralOregonCanal-ArnoldCanal-HeadOfPark-LittleDeschutes CFS",
             validLabels: ["below_Wickiup_Res", "BENO", "CENO", "ARNO", "HeadOfPark", "LAPO"],
-            labelColors: [[46, 82, 108], [124, 50, 194], [194, 50, 144], [50, 194, 144], [194, 50, 50], [201, 52, 196]],
+            labelColors: [[194, 50, 50], [124, 50, 194], [194, 50, 144], [50, 194, 144],[46, 82, 108] , [201, 52, 196]],
             displayLegend: true,
             data: undefined
         }
