@@ -42,7 +42,7 @@
         chartData = [...$cfsDataWicoBeno.allData];
         cfsChart.firstDate = data[0].Date;
         cfsChart.lastDate = data[data.length - 1].Date;
-        nbDays = Math.floor((new Date(cfsChart.lastDate) - new Date(cfsChart.firstDate)) / (1000 * 60 * 60 * 24));
+        nbDays = Math.floor((new Date(cfsChart.lastDate) - new Date(cfsChart.firstDate)) / (1000 * 60 * 60 * 24)) + 1;
         cfsChart.daysRange = [0, nbDays];
     }
 
@@ -51,20 +51,20 @@
         await cfsDataWicoBeno.fetchCsvData();
 
     });
-  const formatter = (value) => {
-    // add value to cfsChart.firstDate
-    const date = new Date(cfsChart.firstDate);
+    const formatter = (value) => {
+        // add value to cfsChart.firstDate
+        const date = new Date(cfsChart.firstDate);
 
-    date.setDate(date.getDate() + value);
-    return date.toDateString();
-  }
-  function dateRangeChanged(event) {
-    const [min, max] = event.detail.values;
-    minDate = new Date(cfsChart.firstDate);
-    maxDate = new Date(cfsChart.firstDate);
-    minDate.setDate(minDate.getDate() + min);
-    maxDate.setDate(maxDate.getDate() + max);
-  }
+        date.setDate(date.getDate() + value);
+        return date.toDateString();
+    }
+    function dateRangeChanged(event) {
+        const [min, max] = event.detail.values;
+        minDate = new Date(cfsChart.firstDate);
+        maxDate = new Date(cfsChart.firstDate);
+        minDate.setDate(minDate.getDate() + min);
+        maxDate.setDate(maxDate.getDate() + max);
+    }
 
 
 </script>
@@ -111,6 +111,7 @@
         padding: 0 0 0 25px;
         margin: 0;
         max-width: 980px;
+        font-size: 13px;
     }
     .chart {
         width: 100%;
@@ -124,5 +125,26 @@
         }
 
     }
+    :root {
+        --range-slider:            hsl(180, 3.9%, 84.9%);
+        --range-handle-inactive:   hsl(180, 33%, 41%);
+        --range-handle:            hsl(195, 67.6%, 71%);
+        --range-handle-focus:      hsl(190.1, 63.2%, 54.1%);
+        --range-handle-border:     hsl(189.6, 67.6%, 71%);
+        --range-range-inactive:    hsl(180, 56.2%, 65.1%);
+        --range-range:             hsl(195, 63.2%, 54.1%);
+        --range-float-inactive:    hsl(180, 4.6%, 61.8%);
+        --range-float:             hsl(211.2, 63.2%, 54.1%);
+        --range-float-text:        hsl(0, 0%, 100%);
 
-    </style>
+        --range-pip:               hsl(210, 14.3%, 53.3%);
+        --range-pip-text:          hsl(210, 14.3%, 53.3%);
+        --range-pip-active:        hsl(180, 25.4%, 24.7%);
+        --range-pip-active-text:   hsl(180, 25.4%, 24.7%);
+        --range-pip-hover:         hsl(180, 25.4%, 24.7%);
+        --range-pip-hover-text:    hsl(180, 25.4%, 24.7%);
+        --range-pip-in-range:      hsl(180, 25.4%, 24.7%);
+        --range-pip-in-range-text: hsl(180, 25.4%, 24.7%);
+    }
+
+</style>

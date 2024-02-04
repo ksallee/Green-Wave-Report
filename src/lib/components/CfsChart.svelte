@@ -69,6 +69,8 @@
         }
     };
 function refreshDateRange(minDate, maxDate){
+    console.log("minDate", minDate)
+    console.log("maxDate", maxDate)
     let tmpDataSets = [...datasets]
     if(!minDate || !maxDate || !chart || !chart.data){
         return;
@@ -76,7 +78,7 @@ function refreshDateRange(minDate, maxDate){
     const minDateObj = new Date(minDate);
     const maxDateObj = new Date(maxDate);
     const minDateIndex = labels.findIndex(label => new Date(label) >= minDateObj);
-    let maxDateIndex = labels.findIndex(label => new Date(label) > maxDateObj);
+    let maxDateIndex = labels.findIndex(label => new Date(label) >= maxDateObj);
 
     // If maxDate is exactly on a label, adjust maxDateIndex to include it
     if (maxDateIndex === -1) {
@@ -111,18 +113,11 @@ function refreshDateRange(minDate, maxDate){
         labels = data.map(entry => entry.Date.split(' ')[0]);
 
         labels =  labels.filter((_, i) => i % datapointsDivisor === 0 || i === data.length - 1);
-        // Find the data per valid label
-        // Valid labels are an array of strings
-        // data is an array of objects, each one with {Date: string, 'CFS @ Head of Park': number, 'other label': number}
-        // Iterate over the labels but also over the filtered data (datapointsDivisor)
-        // So that we can get a min and max value for the Y-axis
-        // if (!chartData){
         let chartDataNew = {
             labels,
             datasets: []
         };
         datasets = []
-        // }
         validLabels.forEach((label, index) => {
             const labelData = data.map(entry => entry[label]);
             const filteredLabelData = labelData.filter((_, i) => i % datapointsDivisor === 0 || i === data.length - 1);
