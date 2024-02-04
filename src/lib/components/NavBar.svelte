@@ -5,7 +5,7 @@
 
     export let color = undefined;
     $: normalColor = getRgbColorStr(color);
-    $: selectedColor = normalColor;
+    $: selectedColor = getRgbColorStr(adjustColor(color, 0.5));
     // $: selectedColor = getRgbColorStr(adjustColor(color, 0.5));
     // $: console.log("color", getRgbColorStr(color), "selectedColor", selectedColor);
 
