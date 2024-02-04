@@ -18,7 +18,7 @@
     export let labelColors = [];
     export let minDate = undefined;
     export let maxDate = undefined;
-    export let datapointsDivisor = 50;
+    export let datapointsDivisor = 70;
     export let data = [];
     export let displayLegend = false;
     export let hiddenLabels = [];
@@ -68,69 +68,80 @@
             });
         }
     };
-function refreshDateRange(minDate, maxDate){
-    console.log("minDate", minDate)
-    console.log("maxDate", maxDate)
-    let tmpDataSets = [...datasets]
-    if(!minDate || !maxDate || !chart || !chart.data){
-        return;
+    function refreshDateRange(minDate, maxDate){
+        let tmpDataSets = [...datasets]
+        if(!minDate || !maxDate || !chart || !chart.data){
+            return;
+        }
+        const minDateObj = new Date(minDate);
+        const maxDateObj = new Date(maxDate);
+        const minDateIndex = labels.findIndex(label => new Date(label) >= minDateObj);
+        let maxDateIndex = labels.findIndex(label => new Date(label) >= maxDateObj);
+
+        // If maxDate is exactly on a label, adjust maxDateIndex to include it
+        if (maxDateIndex === -1) {
+            maxDateIndex = labels.length - 1; // Assume last date should be included if maxDate is beyond any label
+        } else if (new Date(labels[maxDateIndex]) !== maxDateObj) {
+            maxDateIndex -= 1; // Adjust because findIndex gives the first index that is greater
+        }
+
+        if (minDateIndex === -1 || maxDateIndex < minDateIndex) {
+            // No valid range found
+            return;
+        }
+
+        const days = (maxDateObj - minDateObj) / (1000 * 60 * 60 * 24);
+        if (days <= 2) {
+            datapointsDivisor = 3;
+        }
+        if (days <= 5) {
+            datapointsDivisor = 20;
+        } else if (days <= 10) {
+            datapointsDivisor = 40;
+        } else if (days <= 20) {
+            datapointsDivisor = 50;
+        } else {
+            datapointsDivisor = 60;
+        }
+
+        // Update labels
+        chart.data.labels = [...labels.slice(minDateIndex, maxDateIndex + 1).filter((_, i) => i % datapointsDivisor === 0)];
+
+        // Update datasets
+        chart.data.datasets.forEach((dataset, index) => {
+            const data = [...tmpDataSets[index].data]
+            dataset.data = [...data.slice(minDateIndex, maxDateIndex + 1).filter((_, i) => i % datapointsDivisor === 0)];
+        });
+
     }
-    const minDateObj = new Date(minDate);
-    const maxDateObj = new Date(maxDate);
-    const minDateIndex = labels.findIndex(label => new Date(label) >= minDateObj);
-    let maxDateIndex = labels.findIndex(label => new Date(label) >= maxDateObj);
-
-    // If maxDate is exactly on a label, adjust maxDateIndex to include it
-    if (maxDateIndex === -1) {
-        maxDateIndex = labels.length - 1; // Assume last date should be included if maxDate is beyond any label
-    } else if (new Date(labels[maxDateIndex]) !== maxDateObj) {
-        maxDateIndex -= 1; // Adjust because findIndex gives the first index that is greater
-    }
-
-    if (minDateIndex === -1 || maxDateIndex < minDateIndex) {
-        // No valid range found
-        return;
-    }
-
-    // Update labels
-    chart.data.labels = [...labels.slice(minDateIndex, maxDateIndex + 1)];
-
-    // Update datasets
-    chart.data.datasets.forEach((dataset, index) => {
-        const data = [...tmpDataSets[index].data]
-        dataset.data = [...data.slice(minDateIndex, maxDateIndex + 1)];
-    });
-
-}
 
 
     function refresh(data){
         if (!data || data.length === 0){
             return;
         }
-        // if minDate and maxDate are defined, filter the labels
         // Remove the hour and minute from the date
         labels = data.map(entry => entry.Date.split(' ')[0]);
 
-        labels =  labels.filter((_, i) => i % datapointsDivisor === 0 || i === data.length - 1);
+        // labels =  ;
         let chartDataNew = {
-            labels,
+            labels: labels.filter((_, i) => i % datapointsDivisor === 0),
             datasets: []
         };
         datasets = []
         validLabels.forEach((label, index) => {
             const labelData = data.map(entry => entry[label]);
-            const filteredLabelData = labelData.filter((_, i) => i % datapointsDivisor === 0 || i === data.length - 1);
+            // const filteredLabelData = labelData.filter((_, i) => i % datapointsDivisor === 0 );
 
             datasets.push({
-            label: niceLabels[index],
-            data: filteredLabelData,
-            borderColor: getRgbColorStr(labelColors[index]),
-            backgroundColor: getRgbColorStr(adjustColor(labelColors[index], 0.5)),
-            tension: 0.1,
-            borderWidth: 2,
-            // hidden if label is in hiddenLabels
-            hidden: hiddenLabels.includes(label) || filteredLabelData.every(x => x == 0),
+                label: niceLabels[index],
+                data: labelData,
+                borderColor: getRgbColorStr(labelColors[index]),
+                backgroundColor: getRgbColorStr(adjustColor(labelColors[index], 0.5)),
+                tension: 0.1,
+                borderWidth: 2,
+                // hidden if label is in hiddenLabels
+                hidden: hiddenLabels.includes(label) || labelData.every(x => x == 0),
             });
 
         });
@@ -168,7 +179,14 @@ function refreshDateRange(minDate, maxDate){
         // console.log("options", options);
         chartDataNew.datasets = [];
         datasets.forEach(dataset => {
-            chartDataNew.datasets.push({...dataset});
+            // We need to use datapointsDivisor to reduce the amount of data points
+            // in dataset.data
+            let datasetData = dataset.data.filter((_, i) => i % datapointsDivisor === 0);
+            let filteredDataSet = {...dataset};
+            filteredDataSet.data = datasetData;
+            chartDataNew.datasets.push({...filteredDataSet});
+            console.log("filteredDataSet", filteredDataSet.length,filteredDataSet);
+            console.log("fullDataSet", dataset);
         });
         chartData = {...chartDataNew};
     }
