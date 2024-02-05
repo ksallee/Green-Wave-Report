@@ -39,33 +39,28 @@
     function setMinMaxFromStore(chartKey){
         if (chartKey !== "cfs" || !cfsChart.lastDate ) return;
         const  [minOffset, maxOffset] = $dateOffsets[chartKey];
+        const millisecondsPerDay = 1000 * 60 * 60 * 24;
+        nbDays = Math.floor((cfsChart.lastDate - cfsChart.firstDate) / millisecondsPerDay);
+        let min = 0;
+        let max = nbDays + 1;
         if (maxOffset > 0){
-            maxDate = new Date(cfsChart.lastDate);
-            maxDate.setDate(cfsChart.lastDate.getDate() - maxOffset);
+            // max offset is from the last date. Let's calculate the nb of days from the first date to the last date - maxOffset
+            max = nbDays - maxOffset;
         }
         if (minOffset > 0){
-            minDate = new Date(cfsChart.lastDate);
-            minDate.setDate(cfsChart.lastDate.getDate() - minOffset + 1);
+            min = nbDays - minOffset + 1;
         }
+        setMinMaxDates(min, max);
     }
 
     function refresh(data) {
         if(!data|| data.length === 0) return;
-        const millisecondsPerDay = 1000 * 60 * 60 * 24;
         chartData = [...$cfsDataWicoBeno.allData];
         cfsChart.firstDate = new Date(data[0].Date);
         cfsChart.lastDate = new Date(data[data.length - 1].Date);
         minDate = new Date(cfsChart.firstDate);
         maxDate = new Date(cfsChart.lastDate);
         setMinMaxFromStore("cfs");
-        nbDays = Math.floor((cfsChart.lastDate - cfsChart.firstDate) / millisecondsPerDay);
-
-        const daysRangeStart = Math.floor((minDate - cfsChart.firstDate) / millisecondsPerDay);
-        const daysRangeEnd = Math.floor((maxDate - cfsChart.firstDate) / millisecondsPerDay);
-        cfsChart.daysRange = [
-            daysRangeStart,
-            daysRangeEnd
-        ];
     }
 
     onMount(async () => {
@@ -80,11 +75,15 @@
     }
     function dateRangeChanged(event) {
         const [min, max] = event.detail.values;
+        setMinMaxDates(min, max + 1);
+    }
+    function setMinMaxDates(min, max) {
         // add min and max days to cfChart.firstDate to get the actual date
         minDate = new Date(cfsChart.firstDate);
         maxDate = new Date(cfsChart.firstDate);
         minDate.setDate(minDate.getDate() + min);
         maxDate.setDate(maxDate.getDate() + max);
+        cfsChart.daysRange = [min, max];
 
         let offsetMin = -1;
         if (min > 0) {

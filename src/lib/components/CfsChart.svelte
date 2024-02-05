@@ -86,9 +86,9 @@
         }
     }
 
-    function refreshDateRange(minDate, maxDate){
+    function refreshDateRange(minDate, maxDate) {
         let tmpDataSets = [...datasets]
-        if(!minDate || !maxDate || !chart || !chart.data){
+        if (!minDate || !maxDate || !chart || !chart.data) {
             return;
         }
         const minDateIndex = labels.findIndex(label => new Date(label) >= minDate);
@@ -100,12 +100,10 @@
         } else if (new Date(labels[maxDateIndex]) !== maxDate) {
             maxDateIndex -= 1; // Adjust because findIndex gives the first index that is greater
         }
-
         if (minDateIndex === -1 || maxDateIndex < minDateIndex) {
             // No valid range found
             return;
         }
-
         const days = (maxDate - minDate) / (1000 * 60 * 60 * 24);
         if (days <= 2) {
             datapointsDivisor = 3;
@@ -119,29 +117,37 @@
         } else {
             datapointsDivisor = 60;
         }
-
         // Update labels
-        chart.data.labels = [...labels.slice(minDateIndex, maxDateIndex + 1).filter((_, i) => i % datapointsDivisor === 0)];
+        let chartLabels = [...labels];
+
+        // Calculate the new last index after slicing to ensure we include the last point
+        const lastIndex = maxDateIndex - minDateIndex;
+
+        chartData.labels = chartLabels.slice(minDateIndex, maxDateIndex + 1)
+            .filter((_, i, arr) => i % datapointsDivisor === 0 || i === lastIndex);
 
         // Update datasets
-        chart.data.datasets.forEach((dataset, index) => {
-            const data = [...tmpDataSets[index].data]
-            dataset.data = [...data.slice(minDateIndex, maxDateIndex + 1).filter((_, i) => i % datapointsDivisor === 0)];
+        chartData.datasets.forEach((dataset, index) => {
+            const data = [...tmpDataSets[index].data];
+            // Ensure to include the last point by checking against the new lastIndex
+            dataset.data = data.slice(minDateIndex, maxDateIndex + 1)
+                .filter((_, i, arr) => i % datapointsDivisor === 0 || i === lastIndex);
         });
 
+        chartData = {...chartData}
+        chart.update();
     }
-
 
     function refresh(data){
         if (!data || data.length === 0){
             return;
         }
         // Remove the hour and minute from the date
-        labels = data.map(entry => entry.Date.split(' ')[0]);
-
+        // labels = data.map(entry => entry.Date.split(' ')[0]);
+        labels = data.map(entry => entry.Date);
         // labels =  ;
         let chartDataNew = {
-            labels: labels.filter((_, i) => i % datapointsDivisor === 0),
+            labels: labels,
             datasets: []
         };
         datasets = []
@@ -192,22 +198,14 @@
             },
             maintainAspectRatio: false
         };
-        // console.log("chartData", chartData);
-        // console.log("options", options);
         chartDataNew.datasets = [];
         datasets.forEach(dataset => {
-            // We need to use datapointsDivisor to reduce the amount of data points
-            // in dataset.data
-            let datasetData = dataset.data.filter((_, i) => i % datapointsDivisor === 0);
             let filteredDataSet = {...dataset};
-            filteredDataSet.data = datasetData;
+            filteredDataSet.data = [...dataset.data];
             chartDataNew.datasets.push({...filteredDataSet});
-            // console.log("filteredDataSet", filteredDataSet.length,filteredDataSet);
-            // console.log("fullDataSet", dataset);
         });
         chartData = {...chartDataNew};
     }
-
 
 
 </script>
