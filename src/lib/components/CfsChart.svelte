@@ -142,9 +142,7 @@
         if (!data || data.length === 0){
             return;
         }
-        // Remove the hour and minute from the date
-        labels = data.map(entry => entry.Date.split(' ')[0]);
-        // labels = data.map(entry => entry.Date);
+        labels = data.map(entry => entry.Date);
         let chartDataNew = {
             labels: labels,
             datasets: []
@@ -175,7 +173,7 @@
                     ticks: {
                         maxTicksLimit: 6,
                         callback: function(val, index) {
-                            return index !== 0 ? this.getLabelForValue(val) : '';
+                            return index !== 0 ? this.getLabelForValue(val).split(' ')[0] : '';
                         },
                     },
                     grid: {
