@@ -53,7 +53,7 @@
             // color name as the key and the minY and maxY as the value
             Object.entries(thresholdColors).forEach(([colorName, [ymin, ymax]], index) => {
                 let adjustedMinY = 0;
-                if (index === 0){
+                if (ymin <= y.min){
                     adjustedMinY = y.min;
                 }
                 else{
@@ -188,8 +188,6 @@
                 legend: {
                     display: displayLegend,
                     onClick: legendItemClicked,
-
-
                 },
 
             },
