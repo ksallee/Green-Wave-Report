@@ -119,7 +119,7 @@
             />
         </div>
         <div class="range-slider">
-            <RangeSlider {formatter} pips bind:values={cfsChart.daysRange} max={nbDays} range on:change={dateRangeChanged} />
+            <RangeSlider {formatter} bind:values={cfsChart.daysRange} max={nbDays} range on:change={dateRangeChanged} />
         </div>
 
     {/if}
