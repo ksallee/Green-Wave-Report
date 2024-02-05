@@ -143,9 +143,8 @@
             return;
         }
         // Remove the hour and minute from the date
-        // labels = data.map(entry => entry.Date.split(' ')[0]);
-        labels = data.map(entry => entry.Date);
-        // labels =  ;
+        labels = data.map(entry => entry.Date.split(' ')[0]);
+        // labels = data.map(entry => entry.Date);
         let chartDataNew = {
             labels: labels,
             datasets: []
