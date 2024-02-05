@@ -23,7 +23,7 @@
         title: "GreenWave Cubic Feet Per Second (CFS) Bend, Oregon.",
         validLabels: ["below_Wickiup_Res", "BENO", "CENO", "ARNO", "HeadOfPark", "LAPO"],
         niceLabels: ["Below Wickiup Reservoir", "Benham Falls", "Central Oregon Canal", "Arnold Canal", "Head of Park", "Little Deschutes"],
-        labelColors: [[194, 50, 50], [25, 128, 97], [194, 50, 144], [50, 194, 144],[46, 82, 108] , [201, 52, 196]],
+        labelColors: [[194, 50, 50], [46, 82, 108], [194, 50, 144], [50, 194, 144],[25, 128, 97], [201, 52, 196]],
         displayLegend: true,
     }
     let chartData = [];
