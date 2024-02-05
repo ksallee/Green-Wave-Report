@@ -1,6 +1,6 @@
 <script>
     import { onMount } from 'svelte';
-    import { cfsData, cfsDataWhiteWater, cfsDataWicoBeno } from '$lib/stores';
+    import { cfsData, cfsDataWhiteWater, cfsDataWicoBeno, chartsHiddenLabels, dateOffsets } from '$lib/stores';
     import CfsChart  from "$lib/components/CfsChart.svelte";
     import RangeSlider from "svelte-range-slider-pips";
 
@@ -23,7 +23,6 @@
         title: "GreenWave Cubic Feet Per Second (CFS) Bend, Oregon.",
         validLabels: ["below_Wickiup_Res", "BENO", "CENO", "ARNO", "HeadOfPark", "LAPO"],
         niceLabels: ["Below Wickiup Reservoir", "Benham Falls", "Central Oregon Canal", "Arnold Canal", "Head of Park", "Little Deschutes"],
-        hiddenLabels: [],
         labelColors: [[194, 50, 50], [25, 128, 97], [194, 50, 144], [50, 194, 144],[46, 82, 108] , [201, 52, 196]],
         displayLegend: true,
     }
@@ -37,13 +36,36 @@
     // $: secondChart.data = $cfsDataWhiteWater.allData;
     $: refresh($cfsDataWicoBeno.allData);
 
+    function setMinMaxFromStore(chartKey){
+        if (chartKey !== "cfs" || !cfsChart.lastDate ) return;
+        const  [minOffset, maxOffset] = $dateOffsets[chartKey];
+        if (maxOffset > 0){
+            maxDate = new Date(cfsChart.lastDate);
+            maxDate.setDate(cfsChart.lastDate.getDate() - maxOffset);
+        }
+        if (minOffset > 0){
+            minDate = new Date(cfsChart.lastDate);
+            minDate.setDate(cfsChart.lastDate.getDate() - minOffset + 1);
+        }
+    }
+
     function refresh(data) {
         if(!data|| data.length === 0) return;
+        const millisecondsPerDay = 1000 * 60 * 60 * 24;
         chartData = [...$cfsDataWicoBeno.allData];
-        cfsChart.firstDate = data[0].Date;
-        cfsChart.lastDate = data[data.length - 1].Date;
-        nbDays = Math.floor((new Date(cfsChart.lastDate) - new Date(cfsChart.firstDate)) / (1000 * 60 * 60 * 24)) + 1;
-        cfsChart.daysRange = [0, nbDays];
+        cfsChart.firstDate = new Date(data[0].Date);
+        cfsChart.lastDate = new Date(data[data.length - 1].Date);
+        minDate = new Date(cfsChart.firstDate);
+        maxDate = new Date(cfsChart.lastDate);
+        setMinMaxFromStore("cfs");
+        nbDays = Math.floor((cfsChart.lastDate - cfsChart.firstDate) / millisecondsPerDay);
+
+        const daysRangeStart = Math.floor((minDate - cfsChart.firstDate) / millisecondsPerDay);
+        const daysRangeEnd = Math.floor((maxDate - cfsChart.firstDate) / millisecondsPerDay);
+        cfsChart.daysRange = [
+            daysRangeStart,
+            daysRangeEnd
+        ];
     }
 
     onMount(async () => {
@@ -52,18 +74,28 @@
 
     });
     const formatter = (value) => {
-        // add value to cfsChart.firstDate
         const date = new Date(cfsChart.firstDate);
-
         date.setDate(date.getDate() + value);
         return date.toDateString();
     }
     function dateRangeChanged(event) {
         const [min, max] = event.detail.values;
+        // add min and max days to cfChart.firstDate to get the actual date
         minDate = new Date(cfsChart.firstDate);
         maxDate = new Date(cfsChart.firstDate);
         minDate.setDate(minDate.getDate() + min);
         maxDate.setDate(maxDate.getDate() + max);
+
+        let offsetMin = -1;
+        if (min > 0) {
+            offsetMin = Math.floor((cfsChart.lastDate - minDate) / (1000 * 60 * 60 * 24)) + 1
+        }
+        const offsetMax = Math.floor((cfsChart.lastDate - maxDate) / (1000 * 60 * 60 * 24))
+
+        $dateOffsets["cfs"] = [
+            offsetMin,
+            offsetMax
+        ]
     }
 
 
@@ -78,7 +110,7 @@
                 subtitle={cfsChart.subtitle}
                 validLabels={cfsChart.validLabels}
                 niceLabels={cfsChart.niceLabels}
-                hiddenLabels={cfsChart.hiddenLabels}
+                bind:hiddenLabels={$chartsHiddenLabels["cfs"]}
                 labelColors={cfsChart.labelColors}
                 data={chartData}
                 displayLegend={cfsChart.displayLegend}
@@ -87,7 +119,7 @@
             />
         </div>
         <div class="range-slider">
-            <RangeSlider {formatter} bind:values={cfsChart.daysRange} max={nbDays} range on:change={dateRangeChanged} />
+            <RangeSlider {formatter} pips float bind:values={cfsChart.daysRange} max={nbDays} range on:change={dateRangeChanged} />
         </div>
 
     {/if}

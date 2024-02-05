@@ -68,20 +68,36 @@
             });
         }
     };
+
+    function legendItemClicked(event, legendItem, legend){
+        const index = legendItem.datasetIndex;
+        const ci = legend.chart;
+        if (ci.isDatasetVisible(index)) {
+            ci.hide(index);
+            legendItem.hidden = true;
+            if (hiddenLabels.indexOf(legendItem.text) === -1){
+                hiddenLabels = [...hiddenLabels, legendItem.text];
+            }
+        } else {
+            ci.show(index);
+            legendItem.hidden = false;
+            hiddenLabels = [...hiddenLabels.filter(label => label !== legendItem.text)];
+
+        }
+    }
+
     function refreshDateRange(minDate, maxDate){
         let tmpDataSets = [...datasets]
         if(!minDate || !maxDate || !chart || !chart.data){
             return;
         }
-        const minDateObj = new Date(minDate);
-        const maxDateObj = new Date(maxDate);
-        const minDateIndex = labels.findIndex(label => new Date(label) >= minDateObj);
-        let maxDateIndex = labels.findIndex(label => new Date(label) >= maxDateObj);
+        const minDateIndex = labels.findIndex(label => new Date(label) >= minDate);
+        let maxDateIndex = labels.findIndex(label => new Date(label) >= maxDate);
 
         // If maxDate is exactly on a label, adjust maxDateIndex to include it
         if (maxDateIndex === -1) {
             maxDateIndex = labels.length - 1; // Assume last date should be included if maxDate is beyond any label
-        } else if (new Date(labels[maxDateIndex]) !== maxDateObj) {
+        } else if (new Date(labels[maxDateIndex]) !== maxDate) {
             maxDateIndex -= 1; // Adjust because findIndex gives the first index that is greater
         }
 
@@ -90,7 +106,7 @@
             return;
         }
 
-        const days = (maxDateObj - minDateObj) / (1000 * 60 * 60 * 24);
+        const days = (maxDate - minDate) / (1000 * 60 * 60 * 24);
         if (days <= 2) {
             datapointsDivisor = 3;
         }
@@ -132,16 +148,16 @@
         validLabels.forEach((label, index) => {
             const labelData = data.map(entry => entry[label]);
             // const filteredLabelData = labelData.filter((_, i) => i % datapointsDivisor === 0 );
-
+            const niceLabel = niceLabels[index];
             datasets.push({
-                label: niceLabels[index],
+                label: niceLabel,
                 data: labelData,
                 borderColor: getRgbColorStr(labelColors[index]),
                 backgroundColor: getRgbColorStr(adjustColor(labelColors[index], 0.5)),
                 tension: 0.1,
                 borderWidth: 2,
                 // hidden if label is in hiddenLabels
-                hidden: hiddenLabels.includes(label) || labelData.every(x => x == 0),
+                hidden: hiddenLabels.includes(niceLabel) || labelData.every(x => x == 0),
             });
 
         });
@@ -168,6 +184,7 @@
             plugins: {
                 legend: {
                     display: displayLegend,
+                    onClick: legendItemClicked,
 
 
                 },
@@ -175,7 +192,7 @@
             },
             maintainAspectRatio: false
         };
-        console.log("chartData", chartData);
+        // console.log("chartData", chartData);
         // console.log("options", options);
         chartDataNew.datasets = [];
         datasets.forEach(dataset => {
@@ -185,8 +202,8 @@
             let filteredDataSet = {...dataset};
             filteredDataSet.data = datasetData;
             chartDataNew.datasets.push({...filteredDataSet});
-            console.log("filteredDataSet", filteredDataSet.length,filteredDataSet);
-            console.log("fullDataSet", dataset);
+            // console.log("filteredDataSet", filteredDataSet.length,filteredDataSet);
+            // console.log("fullDataSet", dataset);
         });
         chartData = {...chartDataNew};
     }

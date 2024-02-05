@@ -41,17 +41,14 @@
 
     function refreshSiteColor(data) {
         let path = $page.url.pathname;
-        console.log("path", path);
         if (path === "/") {
             siteColor.set($cfsData.color);
             const tc = adjustColor($cfsData.color, 0.3);
             textColor.set(tc);
-            console.log("text color", tc, getRgbColorStr($textColor))
         }
         else{
             siteColor.set([250, 250, 250]);
             textColor.set([10, 10, 10]);
-            console.log("text color white", $textColor)
         }
     }
 </script>
