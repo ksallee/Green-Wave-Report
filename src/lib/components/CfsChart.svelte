@@ -18,7 +18,7 @@
     export let labelColors = [];
     export let minDate = undefined;
     export let maxDate = undefined;
-    export let datapointsDivisor = 70;
+    export let datapointsDivisor = 80;
     export let data = [];
     export let displayLegend = false;
     export let hiddenLabels = [];
@@ -106,16 +106,16 @@
         }
         const days = (maxDate - minDate) / (1000 * 60 * 60 * 24);
         if (days <= 2) {
-            datapointsDivisor = 3;
+            datapointsDivisor = 1;
         }
         if (days <= 5) {
             datapointsDivisor = 20;
         } else if (days <= 10) {
             datapointsDivisor = 40;
         } else if (days <= 20) {
-            datapointsDivisor = 50;
-        } else {
             datapointsDivisor = 60;
+        } else {
+            datapointsDivisor = 80;
         }
         // Update labels
         let chartLabels = [...labels];
