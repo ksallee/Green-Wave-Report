@@ -24,6 +24,7 @@
     export let hiddenLabels = [];
     export let thresholdColors = {};
     export let datapointsFunction = undefined;
+    export let customYTickCallback = undefined;
 
     $: refresh(data);
     $: refreshDateRange(minDate, maxDate);
@@ -70,6 +71,9 @@
             });
         }
     };
+    function yTickCallback(val, index) {
+        return index !== 0 ? this.getLabelForValue(val).split(' ')[0] : '';
+    }
 
     function legendItemClicked(event, legendItem, legend){
         const index = legendItem.datasetIndex;
@@ -166,9 +170,7 @@
                     ticks: {
                         align: "end",
                         maxTicksLimit: 5,
-                        callback: function(val, index) {
-                            return index !== 0 ? this.getLabelForValue(val).split(' ')[0] : '';
-                        },
+                        callback: customYTickCallback?customYTickCallback:yTickCallback,
                     },
                     grid: {
                         display: false

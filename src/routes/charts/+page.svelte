@@ -174,6 +174,19 @@
         }
         return datapointsDivisor;
     }
+    function yTickCallbackMonthDay(val, index) {
+        if (index === 0) {
+            return '';
+        }
+        var date = new Date(this.getLabelForValue(val));
+
+        var month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-indexed
+        var day = date.getDate().toString().padStart(2, '0');
+
+        // Combine month and day
+        var formattedDate = month + "-" + day;
+        return formattedDate;
+    }
 
 
 
@@ -250,6 +263,7 @@
                 bind:minDate={cfsHistoricalChart.minDate}
                 bind:maxDate={cfsHistoricalChart.maxDate}
                 datapointsFunction={cfsHistoricalDatapointsDivisor}
+                customYTickCallback={yTickCallbackMonthDay}
             />
         </div>
         <div class="range-slider">
