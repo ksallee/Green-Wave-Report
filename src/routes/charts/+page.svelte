@@ -300,11 +300,14 @@
         margin: 0;
         max-width: 980px;
         font-size: 13px;
+        margin-bottom: 30px;
+
     }
     .chart {
         width: 100%;
         max-width: 1000px;
         height: 70vh;
+        margin-bottom: -20px;
         /*background-color: blue;*/
     }
     @media (max-width: 600px) {
