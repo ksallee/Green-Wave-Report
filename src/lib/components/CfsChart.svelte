@@ -23,6 +23,7 @@
     export let displayLegend = false;
     export let hiddenLabels = [];
     export let thresholdColors = {};
+    export let datapointsFunction = undefined;
 
     $: refresh(data);
     $: refreshDateRange(minDate, maxDate);
@@ -106,17 +107,8 @@
             return;
         }
         const days = (maxDate - minDate) / (1000 * 60 * 60 * 24);
-        if (days <= 2) {
-            datapointsDivisor = 1;
-        }
-        if (days <= 5) {
-            datapointsDivisor = 20;
-        } else if (days <= 10) {
-            datapointsDivisor = 40;
-        } else if (days <= 20) {
-            datapointsDivisor = 60;
-        } else {
-            datapointsDivisor = 80;
+        if (datapointsFunction){
+            datapointsDivisor = datapointsFunction(days);
         }
         // Update labels
         let chartLabels = [...labels];
@@ -140,6 +132,7 @@
     }
 
     function refresh(data){
+        console.log("Refreshing chart data", data);
         if (!data || data.length === 0){
             return;
         }
@@ -172,7 +165,8 @@
                     display: true,
                     beginAtZero: false,
                     ticks: {
-                        maxTicksLimit: 6,
+                        align: "end",
+                        maxTicksLimit: 5,
                         callback: function(val, index) {
                             return index !== 0 ? this.getLabelForValue(val).split(' ')[0] : '';
                         },

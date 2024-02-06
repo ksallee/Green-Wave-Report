@@ -1,25 +1,9 @@
 <script>
     import { onMount } from 'svelte';
     import RangeSlider from "svelte-range-slider-pips";
-    import { cfsData, chartsHiddenLabels, dateOffsets } from '$lib/stores';
-    import {thresholdColors} from "$lib/constants.js";
+    import { cfsData, waterTempData, chartsHiddenLabels, dateOffsets } from '$lib/stores';
+    import {thresholdColors, temperatureThresholdColors} from "$lib/constants.js";
     import CfsChart  from "$lib/components/CfsChart.svelte";
-
-
-
-    // let firsChart = {
-    //     title: 'GreenWave Cubic Feet Per Second (CFS) Bend, Oregon',
-    //     validLabels: ['CFS @ Head of Park'],
-    //     labelColors: [[46, 82, 108]],
-    //     displayLegend: false,
-    // }
-    //
-    // let secondChart = {
-    //     title: 'BelowWickiupRes-BenhamFalls-GreenWave CFS',
-    //     validLabels: ["below_Wickiup_Res", "BENO", "HeadOfPark"],
-    //     labelColors: [[194, 50, 144], [124, 50, 194], [46, 82, 108]],
-    //     displayLegend: true,
-    // }
 
     let cfsChart = {
         title: "GreenWave Cubic Feet Per Second (CFS) Bend, Oregon.",
@@ -27,46 +11,61 @@
         niceLabels: ["Below Wickiup Reservoir", "Benham Falls", "Central Oregon Canal", "Arnold Canal", "Head of Park", "Little Deschutes"],
         labelColors: [[194, 50, 50], [46, 82, 108], [194, 50, 144], [50, 194, 144],[25, 128, 97], [201, 52, 196]],
         displayLegend: true,
+        startDate: undefined,
+        endDate: undefined,
+        minDate: undefined,
+        maxDate: undefined,
+        nbDays: 0,
     }
-    let chartData = [];
-    let minDate = undefined;
-    let maxDate = undefined;
-    let nbDays = 0;
+    let cfsChartData = [];
+    let waterTempChart = {
+        title: "Water Temperature 1 Mile Down River",
+        validLabels: ["WATER_TEMP","Air-Temp"],
+        niceLabels: ["Water Temperature", "Air Temperature"],
+        labelColors: [[46, 82, 108], [194, 50, 50]],
+        displayLegend: true,
+        startDate: undefined,
+        endDate: undefined,
+        minDate: undefined,
+        maxDate: undefined,
+        nbDays: 0,
+    }
+    let waterTempChartData = [];
 
-
-    // $: firsChart.data = $cfsData.allData;
-    // $: secondChart.data = $cfsDataWhiteWater.allData;
-    $: refresh($cfsData.allData);
-
-    function setMinMaxFromStore(chartKey){
-        if (chartKey !== "cfs" || !cfsChart.lastDate ) return;
+    function setMinMaxFromStore(chartKey, chart){
+        if ( !chart.lastDate ) return;
+        if ( !$dateOffsets[chartKey] ) {
+            $dateOffsets[chartKey] = [-1, 0];
+        }
         const  [minOffset, maxOffset] = $dateOffsets[chartKey];
         const millisecondsPerDay = 1000 * 60 * 60 * 24;
-        nbDays = Math.floor((cfsChart.lastDate - cfsChart.firstDate) / millisecondsPerDay);
+        chart.nbDays = Math.floor((chart.lastDate - chart.firstDate) / millisecondsPerDay);
         let min = 0;
-        let max = nbDays + 1;
+        let max = chart.nbDays + 1;
         if (maxOffset > 0){
             // max offset is from the last date. Let's calculate the nb of days from the first date to the last date - maxOffset
-            max = nbDays - maxOffset;
+            max = chart.nbDays - maxOffset;
         }
         if (minOffset > 0){
-            min = nbDays - minOffset + 1;
+            min = chart.nbDays - minOffset + 1;
         }
-        setMinMaxDates(min, max);
+        setMinMaxDates(chartKey, chart, min, max);
     }
 
-    function refresh(data) {
-        if(!data|| data.length === 0) return;
-        chartData = [...$cfsData.allData];
-        cfsChart.firstDate = new Date(data[0].Date);
-        cfsChart.lastDate = new Date(data[data.length - 1].Date);
-        minDate = new Date(cfsChart.firstDate);
-        maxDate = new Date(cfsChart.lastDate);
-        setMinMaxFromStore("cfs");
+    function setChartData(chart, data) {
+        chart.firstDate = new Date(data[0].Date);
+        chart.lastDate = new Date(data[data.length - 1].Date);
     }
 
     onMount(async () => {
         await cfsData.fetchCsvData();
+        await waterTempData.fetchCsvData();
+        cfsChartData = [...$cfsData.allData];
+        setChartData(cfsChart, $cfsData.allData);
+        setMinMaxFromStore("cfs", cfsChart);
+        waterTempChartData = [...$waterTempData.allData];
+        setChartData(waterTempChart, $waterTempData.allData);
+        setMinMaxFromStore("waterTemp", waterTempChart);
 
     });
     const formatter = (value) => {
@@ -74,35 +73,68 @@
         date.setDate(date.getDate() + value);
         return date.toDateString();
     }
-    function dateRangeChanged(event) {
+    function dateRangeChanged(event, chartKey, chart) {
         const [min, max] = event.detail.values;
-        setMinMaxDates(min, max + 1);
+        setMinMaxDates(chartKey, chart, min, max + 1);
     }
-    function setMinMaxDates(min, max) {
+    function setMinMaxDates(chartKey, chart, min, max) {
         // add min and max days to cfChart.firstDate to get the actual date
-        minDate = new Date(cfsChart.firstDate);
-        maxDate = new Date(cfsChart.firstDate);
-        minDate.setDate(minDate.getDate() + min);
-        maxDate.setDate(maxDate.getDate() + max);
-        cfsChart.daysRange = [min, max];
+        chart.minDate = new Date(chart.firstDate);
+        chart.maxDate = new Date(chart.firstDate);
+        chart.minDate.setDate(chart.minDate.getDate() + min);
+        chart.maxDate.setDate(chart.maxDate.getDate() + max);
+        chart.daysRange = [min, max];
 
         let offsetMin = -1;
         if (min > 0) {
-            offsetMin = Math.floor((cfsChart.lastDate - minDate) / (1000 * 60 * 60 * 24)) + 1
+            offsetMin = Math.floor((chart.lastDate - chart.minDate) / (1000 * 60 * 60 * 24)) + 1
         }
-        const offsetMax = Math.floor((cfsChart.lastDate - maxDate) / (1000 * 60 * 60 * 24))
+        const offsetMax = Math.floor((chart.lastDate - chart.maxDate) / (1000 * 60 * 60 * 24))
 
-        $dateOffsets["cfs"] = [
+        $dateOffsets[chartKey] = [
             offsetMin,
             offsetMax
         ]
+    }
+
+    function datapointsDivisor(days){
+        let datapointsDivisor = 1;
+        if (days <= 2) {
+            datapointsDivisor = 1;
+        }
+        if (days <= 5) {
+            datapointsDivisor = 20;
+        } else if (days <= 10) {
+            datapointsDivisor = 40;
+        } else if (days <= 20) {
+            datapointsDivisor = 60;
+        } else {
+            datapointsDivisor = 80;
+        }
+        return datapointsDivisor;
+    }
+    function waterTempDatapointsDivisor(days){
+        let datapointsDivisor = 1;
+        if (days <= 2) {
+            datapointsDivisor = 1;
+        }
+        if (days <= 5) {
+            datapointsDivisor = 10;
+        } else if (days <= 10) {
+            datapointsDivisor = 20;
+        } else if (days <= 20) {
+            datapointsDivisor = 30;
+        } else {
+            datapointsDivisor = 40;
+        }
+        return datapointsDivisor;
     }
 
 
 </script>
 
 <div class="container">
-    {#if chartData && cfsChart.daysRange}
+    {#if cfsChartData && cfsChart.daysRange}
 
         <div class="chart">
             <CfsChart
@@ -112,19 +144,52 @@
                 niceLabels={cfsChart.niceLabels}
                 bind:hiddenLabels={$chartsHiddenLabels["cfs"]}
                 labelColors={cfsChart.labelColors}
-                data={chartData}
+                data={cfsChartData}
                 displayLegend={cfsChart.displayLegend}
                 thresholdColors={thresholdColors}
-                bind:minDate
-                bind:maxDate
+                bind:minDate={cfsChart.minDate}
+                bind:maxDate={cfsChart.maxDate}
+                datapointsFunction={datapointsDivisor}
             />
         </div>
         <div class="range-slider">
-            <RangeSlider {formatter} bind:values={cfsChart.daysRange} max={nbDays} range on:change={dateRangeChanged} />
+            <RangeSlider
+                {formatter}
+                bind:values={cfsChart.daysRange}
+                max={cfsChart.nbDays}
+                range
+                on:change={(e) => dateRangeChanged(e, "cfs", cfsChart)}
+            />
         </div>
-
     {/if}
-    <!--{/each}-->
+    {#if waterTempChartData && waterTempChart.daysRange}
+        <div class="chart">
+            <CfsChart
+                title={waterTempChart.title}
+                subtitle={waterTempChart.subtitle}
+                validLabels={waterTempChart.validLabels}
+                niceLabels={waterTempChart.niceLabels}
+                bind:hiddenLabels={$chartsHiddenLabels["waterTemp"]}
+                labelColors={waterTempChart.labelColors}
+                data={waterTempChartData}
+                displayLegend={waterTempChart.displayLegend}
+                thresholdColors={temperatureThresholdColors}
+                bind:minDate={waterTempChart.minDate}
+                bind:maxDate={waterTempChart.maxDate}
+                datapointsFunction={waterTempDatapointsDivisor}
+            />
+        </div>
+        <div class="range-slider">
+            <RangeSlider
+                {formatter}
+                bind:values={waterTempChart.daysRange}
+                max={waterTempChart.nbDays}
+                range
+                on:change={(e) => dateRangeChanged(e, "waterTemp", waterTempChart)}
+            />
+        </div>
+    {/if}
+
 </div>
 
 
