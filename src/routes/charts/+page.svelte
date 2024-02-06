@@ -1,7 +1,7 @@
 <script>
     import { onMount } from 'svelte';
     import RangeSlider from "svelte-range-slider-pips";
-    import { cfsData, waterTempData, chartsHiddenLabels, dateOffsets } from '$lib/stores';
+    import { cfsData, waterTempData, chartsHiddenLabels, dateOffsets, cfsHistoricalData } from '$lib/stores';
     import {thresholdColors, temperatureThresholdColors} from "$lib/constants.js";
     import CfsChart  from "$lib/components/CfsChart.svelte";
 
@@ -32,6 +32,21 @@
     }
     let waterTempChartData = [];
 
+    let cfsHistoricalChart = {
+        title: "Past Water Flows at Head of Park",
+        //Date,2013,2014,2015,2017,2016,2018,2019,2020,2021,2022,2023,2024
+        validLabels: ["2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023", "2024"],
+        niceLabels: ["2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023", "2024"],
+        labelColors: [[194, 50, 50], [46, 82, 108], [194, 50, 144], [50, 194, 144],[25, 128, 97], [201, 52, 196], [242, 251, 20], [50, 173, 162], [99, 7, 241], [67, 106, 143], [66, 198, 191], [1, 0, 185]],
+        displayLegend: true,
+        startDate: undefined,
+        endDate: undefined,
+        minDate: undefined,
+        maxDate: undefined,
+        nbDays: 0,
+    }
+    let cfsHistoricalChartData = [];
+
     function setMinMaxFromStore(chartKey, chart){
         if ( !chart.lastDate ) return;
         if ( !$dateOffsets[chartKey] ) {
@@ -60,12 +75,22 @@
     onMount(async () => {
         await cfsData.fetchCsvData();
         await waterTempData.fetchCsvData();
+        await cfsHistoricalData.fetchCsvData();
         cfsChartData = [...$cfsData.allData];
         setChartData(cfsChart, $cfsData.allData);
         setMinMaxFromStore("cfs", cfsChart);
         waterTempChartData = [...$waterTempData.allData];
         setChartData(waterTempChart, $waterTempData.allData);
         setMinMaxFromStore("waterTemp", waterTempChart);
+        cfsHistoricalChartData = [...$cfsHistoricalData.allData];
+        // The historical data for the year 2024 should be ammended and all 0s should be removed
+        cfsHistoricalChartData.forEach((row) => {
+            if (row["2024"] === "0") {
+                row["2024"] = null;
+            }
+        });
+        setChartData(cfsHistoricalChart, $cfsHistoricalData.allData);
+        setMinMaxFromStore("cfsHistorical", cfsHistoricalChart);
 
     });
     const formatter = (value) => {
@@ -130,9 +155,26 @@
         else {
             datapointsDivisor = 30;
         }
-        console.log("datapointsDivisor",datapointsDivisor)
         return datapointsDivisor;
     }
+    function cfsHistoricalDatapointsDivisor(days){
+        let datapointsDivisor;
+        if (days <= 50) {
+            datapointsDivisor = 1;
+        } else if (days <= 100) {
+            datapointsDivisor = 4;
+        } else if (days <= 200){
+                datapointsDivisor = 5;
+        }else if (days <= 300)
+        {
+            datapointsDivisor = 7;
+        }
+        else {
+            datapointsDivisor = 10;
+        }
+        return datapointsDivisor;
+    }
+
 
 
 </script>
@@ -190,6 +232,33 @@
                 max={waterTempChart.nbDays}
                 range
                 on:change={(e) => dateRangeChanged(e, "waterTemp", waterTempChart)}
+            />
+        </div>
+    {/if}
+    {#if cfsHistoricalChartData && cfsHistoricalChart.daysRange}
+        <div class="chart">
+            <CfsChart
+                title={cfsHistoricalChart.title}
+                subtitle={cfsHistoricalChart.subtitle}
+                validLabels={cfsHistoricalChart.validLabels}
+                niceLabels={cfsHistoricalChart.niceLabels}
+                bind:hiddenLabels={$chartsHiddenLabels["cfsHistorical"]}
+                labelColors={cfsHistoricalChart.labelColors}
+                data={cfsHistoricalChartData}
+                displayLegend={cfsHistoricalChart.displayLegend}
+                thresholdColors={thresholdColors}
+                bind:minDate={cfsHistoricalChart.minDate}
+                bind:maxDate={cfsHistoricalChart.maxDate}
+                datapointsFunction={cfsHistoricalDatapointsDivisor}
+            />
+        </div>
+        <div class="range-slider">
+            <RangeSlider
+                {formatter}
+                bind:values={cfsHistoricalChart.daysRange}
+                max={cfsHistoricalChart.nbDays}
+                range
+                on:change={(e) => dateRangeChanged(e, "cfsHistorical", cfsHistoricalChart)}
             />
         </div>
     {/if}

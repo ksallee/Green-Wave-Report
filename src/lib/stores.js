@@ -5,7 +5,7 @@ import { csvToJson, getCfsColor} from "$lib/utils.js";
 
 
 export const chartsHiddenLabels = persistent({
-	start_value: {"cfs": [], "waterTemp": []},
+	start_value: {"cfs": [], "waterTemp": [], "cfsHistorical": []},
 	key: "chartsHiddenLabels", // key to save as in Storage
 	storage_type: "localStorage" // Storage object to use
 })
@@ -15,7 +15,7 @@ export const chartsHiddenLabels = persistent({
 // from the chart's end date
 // -1 means no offset, 5 means 5 days before the end date
 export const dateOffsets = persistent({
-    start_value: {"cfs": [-1, 0], "waterTemp": [-1, 0]},
+    start_value: {"cfs": [-1, 0], "waterTemp": [-1, 0], "cfsHistorical": [-1, 0]},
     key: "endDateOffsets",
     storage_type: "localStorage"
 })
@@ -42,4 +42,5 @@ function createCsvDataStore(url) {
 
 export const cfsData = createCsvDataStore('WICO_BENO_CENO_ARNO_HEAD_LAPO.csv');
 export const waterTempData = createCsvDataStore('BENOWaterAirTemp.csv');
+export const cfsHistoricalData = createCsvDataStore('GREENWAVE_13to20Year.csv');
 

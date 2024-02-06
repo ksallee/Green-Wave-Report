@@ -132,7 +132,6 @@
     }
 
     function refresh(data){
-        console.log("Refreshing chart data", data);
         if (!data || data.length === 0){
             return;
         }
