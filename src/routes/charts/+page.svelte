@@ -22,7 +22,7 @@
         title: "Water Temperature 1 Mile Down River",
         validLabels: ["WATER_TEMP","Air-Temp"],
         niceLabels: ["Water Temperature", "Air Temperature"],
-        labelColors: [[46, 82, 108], [194, 50, 50]],
+        labelColors: [[36, 55, 150], [150, 36, 85]],
         displayLegend: true,
         startDate: undefined,
         endDate: undefined,

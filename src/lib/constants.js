@@ -6,6 +6,12 @@ export const colors = {
     green: [144, 238, 144], // Soft green
     blue: [173, 216, 230], // Light blue
     violet: [221, 160, 221], // Plum, softer violet
+    temperature1: [78, 139, 163, 0.82],
+    temperature2: [42, 157, 143, 0.82],
+    temperature3: [233, 196, 106, 0.82],
+    temperature4: [244, 162, 97, 0.82],
+    temperature5: [231, 111, 81, 0.82],
+    temperature6: [242, 92, 84, 0.82],
 };
 export const thresholds = [0, 450, 550, 650, 800, 1000, 1200];
 
@@ -20,10 +26,10 @@ export const thresholdColors = {
 
 export const temperatureThresholds = [-50, 42, 43, 52, 58, 62, 100];
 export const temperatureThresholdColors = {
-    violet: [temperatureThresholds[0], temperatureThresholds[1]],
-    blue: [temperatureThresholds[1], temperatureThresholds[2]],
-    green: [temperatureThresholds[2], temperatureThresholds[3]],
-    yellow: [temperatureThresholds[3], temperatureThresholds[4]],
-    orange: [temperatureThresholds[4], temperatureThresholds[5]],
-    red: [temperatureThresholds[5], temperatureThresholds[6]]
+    temperature1: [temperatureThresholds[0], temperatureThresholds[1]],
+    temperature2: [temperatureThresholds[1], temperatureThresholds[2]],
+    temperature3: [temperatureThresholds[2], temperatureThresholds[3]],
+    temperature4: [temperatureThresholds[3], temperatureThresholds[4]],
+    temperature5: [temperatureThresholds[4], temperatureThresholds[5]],
+    temperature6: [temperatureThresholds[5], temperatureThresholds[6]],
 }
