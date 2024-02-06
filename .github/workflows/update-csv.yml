@@ -15,17 +15,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Fetch CSV data
-        run: curl https://www.gwsr2024.xyz/surf/GREENWAVE_Year.csv -o static/GREENWAVE_Year.csv
-
-      - name: Fetch CSV data 2
-        run: curl https://www.gwsr2024.xyz/surf/WICO-BENO-Whitewater.csv -o static/WICO-BENO-Whitewater.csv
-
-      - name: Fetch CSV data 3
+      - name: Fetch CSV data 1
         run: curl https://www.gwsr2024.xyz/surf/WICO_BENO_CENO_ARNO_HEAD_LAPO.csv -o static/WICO_BENO_CENO_ARNO_HEAD_LAPO.csv
-      - name: Fetch CSV data 4
+      - name: Fetch CSV data 2
         run: curl https://www.gwsr2024.xyz/surf/GREENWAVE_13to20Year.csv -o static/GREENWAVE_13to20Year.csv
-      - name: Fetch CSV data 5
+      - name: Fetch CSV data 3
         run: curl https://www.gwsr2024.xyz/surf/BENOWaterAirTemp.csv -o static/BENOWaterAirTemp.csv
 
       - name: Commit and push if changes

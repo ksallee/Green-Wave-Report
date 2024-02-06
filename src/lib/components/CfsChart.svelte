@@ -3,7 +3,7 @@
     import {fade} from 'svelte/transition';
     import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Filler, Legend } from 'chart.js';
 
-    import { colors, thresholdColors } from "$lib/constants";
+    import { colors } from "$lib/constants";
     import {adjustColor, getRgbColorStr} from "../../lib/utils";
 
     ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Filler, Legend);
@@ -22,6 +22,7 @@
     export let data = [];
     export let displayLegend = false;
     export let hiddenLabels = [];
+    export let thresholdColors = {};
 
     $: refresh(data);
     $: refreshDateRange(minDate, maxDate);

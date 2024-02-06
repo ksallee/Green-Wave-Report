@@ -1,8 +1,10 @@
 <script>
     import { onMount } from 'svelte';
-    import { cfsData, cfsDataWhiteWater, cfsDataWicoBeno, chartsHiddenLabels, dateOffsets } from '$lib/stores';
-    import CfsChart  from "$lib/components/CfsChart.svelte";
     import RangeSlider from "svelte-range-slider-pips";
+    import { cfsData, chartsHiddenLabels, dateOffsets } from '$lib/stores';
+    import {thresholdColors} from "$lib/constants.js";
+    import CfsChart  from "$lib/components/CfsChart.svelte";
+
 
 
     // let firsChart = {
@@ -34,7 +36,7 @@
 
     // $: firsChart.data = $cfsData.allData;
     // $: secondChart.data = $cfsDataWhiteWater.allData;
-    $: refresh($cfsDataWicoBeno.allData);
+    $: refresh($cfsData.allData);
 
     function setMinMaxFromStore(chartKey){
         if (chartKey !== "cfs" || !cfsChart.lastDate ) return;
@@ -55,7 +57,7 @@
 
     function refresh(data) {
         if(!data|| data.length === 0) return;
-        chartData = [...$cfsDataWicoBeno.allData];
+        chartData = [...$cfsData.allData];
         cfsChart.firstDate = new Date(data[0].Date);
         cfsChart.lastDate = new Date(data[data.length - 1].Date);
         minDate = new Date(cfsChart.firstDate);
@@ -64,8 +66,7 @@
     }
 
     onMount(async () => {
-        await cfsDataWhiteWater.fetchCsvData();
-        await cfsDataWicoBeno.fetchCsvData();
+        await cfsData.fetchCsvData();
 
     });
     const formatter = (value) => {
@@ -113,6 +114,7 @@
                 labelColors={cfsChart.labelColors}
                 data={chartData}
                 displayLegend={cfsChart.displayLegend}
+                thresholdColors={thresholdColors}
                 bind:minDate
                 bind:maxDate
             />

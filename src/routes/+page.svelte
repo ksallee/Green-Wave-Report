@@ -28,8 +28,8 @@
     });
 
     function refresh(data) {
-        if ($cfsData.lastEntry && $cfsData.lastEntry["CFS @ Head of Park"]) {
-            const cfs = parseFloat($cfsData.lastEntry["CFS @ Head of Park"]);
+        if ($cfsData.lastEntry && $cfsData.lastEntry["HeadOfPark"]) {
+            const cfs = parseFloat($cfsData.lastEntry["HeadOfPark"]);
             cfsValue.set(cfs);
         }
     }

@@ -32,7 +32,8 @@ function createCsvDataStore(url) {
             .then(csvText => {
                 const jsonData = csvToJson(csvText);
                 const lastEntry = jsonData[jsonData.length - 1];
-                const cfs = parseFloat(lastEntry["CFS @ Head of Park"]);
+                console.log("lastEntry", lastEntry);
+                const cfs = parseFloat(lastEntry["HeadOfPark"]);
                 set({ lastEntry, allData: jsonData, color: colors[getCfsColor(cfs)]});
             })
             .catch(error => console.error('Error fetching CSV data:', error));
@@ -44,7 +45,5 @@ function createCsvDataStore(url) {
     };
 }
 
-export const cfsData = createCsvDataStore('GREENWAVE_Year.csv');
-export const cfsDataWhiteWater = createCsvDataStore('WICO-BENO-Whitewater.csv');
-export const cfsDataWicoBeno = createCsvDataStore("WICO_BENO_CENO_ARNO_HEAD_LAPO.csv");
+export const cfsData = createCsvDataStore('WICO_BENO_CENO_ARNO_HEAD_LAPO.csv');
 
