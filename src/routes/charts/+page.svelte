@@ -115,18 +115,22 @@
     }
     function waterTempDatapointsDivisor(days){
         let datapointsDivisor = 1;
-        if (days <= 2) {
-            datapointsDivisor = 1;
-        }
         if (days <= 5) {
-            datapointsDivisor = 10;
+            datapointsDivisor = 2;
         } else if (days <= 10) {
-            datapointsDivisor = 20;
+            datapointsDivisor = 5;
         } else if (days <= 20) {
-            datapointsDivisor = 30;
-        } else {
-            datapointsDivisor = 40;
+            datapointsDivisor = 10;
+        } else if (days <= 30){
+                datapointsDivisor = 17;
+        }else if (days <= 40)
+        {
+            datapointsDivisor = 20;
         }
+        else {
+            datapointsDivisor = 30;
+        }
+        console.log("datapointsDivisor",datapointsDivisor)
         return datapointsDivisor;
     }
 
@@ -179,6 +183,7 @@
                 datapointsFunction={waterTempDatapointsDivisor}
             />
         </div>
+        {waterTempChart.nbDays}
         <div class="range-slider">
             <RangeSlider
                 {formatter}

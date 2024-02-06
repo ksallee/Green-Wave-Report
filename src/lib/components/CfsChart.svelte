@@ -8,7 +8,7 @@
 
     ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Filler, Legend);
     ChartJS.defaults.color = '#111'
-    ChartJS.defaults.borderColor = '#111'
+    ChartJS.defaults.borderColor = '#ffffff'
 
 
     export let title = '';
