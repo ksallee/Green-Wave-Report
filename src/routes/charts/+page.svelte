@@ -183,7 +183,6 @@
                 datapointsFunction={waterTempDatapointsDivisor}
             />
         </div>
-        {waterTempChart.nbDays}
         <div class="range-slider">
             <RangeSlider
                 {formatter}
