@@ -83,11 +83,14 @@
         setChartData(waterTempChart, $waterTempData.allData);
         setMinMaxFromStore("waterTemp", waterTempChart);
         cfsHistoricalChartData = [...$cfsHistoricalData.allData];
-        // The historical data for the year 2024 should be ammended and all 0s should be removed
+        // The historical data for the year 2024 should be amended and all 0s should be removed
+        // we also need to convert the Date and remove the year from it.
+        // date format: 2024-01-01 00:00
         cfsHistoricalChartData.forEach((row) => {
             if (row["2024"] === "0") {
                 row["2024"] = null;
             }
+            row["Date"] = row["Date"].replace(/^\d{4}-/, '');
         });
         setChartData(cfsHistoricalChart, $cfsHistoricalData.allData);
         setMinMaxFromStore("cfsHistorical", cfsHistoricalChart);
