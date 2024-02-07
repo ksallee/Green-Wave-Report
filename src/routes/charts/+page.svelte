@@ -315,7 +315,7 @@
             width: 95%;
         }
         .chart{
-            margin-bottom: 0px;
+            margin-bottom: 10px;
         }
 
     }
