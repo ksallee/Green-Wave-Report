@@ -13,7 +13,7 @@ export const colors = {
     temperature5: [231, 111, 81, 0.82],
     temperature6: [242, 92, 84, 0.82],
 };
-export const thresholds = [0, 450, 550, 650, 800, 1000, 1200];
+export const thresholds = [0, 450, 550, 650, 800, 1000, 3000];
 
 export const thresholdColors = {
     grey: [thresholds[0], thresholds[1]],
@@ -24,7 +24,7 @@ export const thresholdColors = {
     violet: [thresholds[5], thresholds[6]],
 }
 
-export const temperatureThresholds = [-50, 42, 43, 52, 58, 62, 100];
+export const temperatureThresholds = [-50, 42, 43, 52, 58, 62, 200];
 export const temperatureThresholdColors = {
     temperature1: [temperatureThresholds[0], temperatureThresholds[1]],
     temperature2: [temperatureThresholds[1], temperatureThresholds[2]],
