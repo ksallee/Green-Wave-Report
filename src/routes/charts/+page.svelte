@@ -314,6 +314,9 @@
         .range-slider{
             width: 95%;
         }
+        .chart{
+            margin-bottom: 0px;
+        }
 
     }
     :root {
