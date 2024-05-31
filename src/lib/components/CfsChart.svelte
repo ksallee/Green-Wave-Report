@@ -48,7 +48,7 @@
                 const to = y.getPixelForValue(ymax);
                 ctx.save();
                 // very light grey for now
-                ctx.fillStyle = `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.1)`;
+                ctx.fillStyle = "rgba(230,230,230, 0.1)";
                 // ctx.fillStyle = `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${color[3]? color[3] : 1})`;
                 ctx.fillRect(left, to, right - left, from - to);
                 ctx.restore();
@@ -180,6 +180,12 @@
                 },
                 y: {
                     beginAtZero: false,
+                    grid: {
+                      display: true,
+                      color: '#ddd',
+                      borderColor: '#ddd',
+                      borderWidth: 1
+                    }
                 }
             },
             plugins: {
