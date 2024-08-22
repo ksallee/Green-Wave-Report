@@ -2,8 +2,8 @@
     import { tweened } from 'svelte/motion';
     import { cubicOut } from 'svelte/easing';
     import { cfsData } from "$lib/stores";
-    import {derived} from "svelte/store";
-    import {fade} from "svelte/transition";
+    import { derived } from "svelte/store";
+    import { fade } from "svelte/transition";
 
     let cfsValue = tweened(400, {
         duration: 300,
@@ -16,10 +16,10 @@
         if ($cfsData.lastEntry && $cfsData.lastEntry["Date"]) {
             const date = new Date($cfsData.lastEntry["Date"]);
             return date.toLocaleDateString('en-US', {
-                weekday: 'long', // "Monday"
-                year: 'numeric', // "2024"
-                month: 'long', // "February"
-                day: 'numeric', // "1"
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
                 hour: 'numeric',
                 minute: 'numeric',
             });
@@ -33,45 +33,80 @@
             cfsValue.set(cfs);
         }
     }
-
 </script>
 
 <svelte:head>
     <title>Green Wave CFS</title>
 </svelte:head>
 
-<div class="container" in:fade>
-    <div class="card" >
-        {#if $cfsData.lastEntry}
-            <h1>CFS @ Head of Park</h1>
-            <h2>{$cfsValue.toFixed(0)}</h2>
-
+<div class="main-container">
+    <div class="top-container" in:fade>
+        <div class="card">
+            {#if $cfsData.lastEntry}
+                <h1>CFS @ Head of Park</h1>
+                <h2>{$cfsValue.toFixed(0)}</h2>
+            {/if}
+        </div>
+        {#if $formattedDate}
+            <p>
+                <span class="label">Date:</span> <span class="value">{$formattedDate}</span>
+            </p>
         {/if}
     </div>
-    {#if $formattedDate}
-        <p>
-            <span class="label">Date:</span> <span class="value">{$formattedDate}</span>
-        </p>
-    {/if}
+    <div class="bottom-container">
+        <div class="video-wrapper">
+            <iframe src="https://www.youtube-nocookie.com/embed/aIpQv1m9lOc?si=5QICvlhoPFzyTave" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+    </div>
 </div>
 
-
 <style>
-
-    .container{
+    .main-container {
         height: calc(100svh - 45px);
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .top-container {
+        flex: 1;
         display: flex;
         justify-content: center;
         align-items: center;
-        position: relative;
-        width:100%;
         flex-direction: column;
+        padding: 1rem;
+        box-sizing: border-box;
+    }
+
+    .bottom-container {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 1rem;
+        box-sizing: border-box;
+    }
+
+    .video-wrapper {
+        width: 100%;
+        max-width: 800px;
+        aspect-ratio: 16 / 9;
+        position: relative;
+    }
+
+    .video-wrapper iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
     }
 
     .card {
         text-align: center;
         box-sizing: border-box;
-        width: 33vw;
+        width: 100%;
+        max-width: 600px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -79,37 +114,40 @@
     }
 
     h1, h2, p {
-        color: #ffffff; /* White text for contrast */
+        color: #ffffff;
         margin: 0;
         font-weight: 400;
     }
-    h2{
-        font-weight: 700;
-        font-size: 5rem!important;
-    }
-    .value {
-        font-size: 14px
-    }
-    .label {
-        font-weight: 700;
-        font-size: 14px;
-    }
 
+    h1 {
+        font-size: clamp(1.5rem, 4vw, 2rem);
+        margin-bottom: 0.5rem;
+    }
 
     h2 {
-        font-size: clamp(3rem, 8vw, 6rem); /* Responsive font size, adjusted for readability */
-        font-weight: bold;
-        margin: 1rem 0; /* More space around the big, bold number */
+        font-weight: 700;
+        font-size: clamp(2.5rem, 8vw, 4rem) !important;
+    }
+
+    .value, .label {
+        font-size: clamp(12px, 3vw, 14px);
+    }
+
+    .label {
+        font-weight: 700;
     }
 
     p {
-        font-size: 1.25rem; /* Slightly larger paragraph text for clarity */
-        margin-bottom: 1rem; /* Extra space at the bottom */
-        justify-self: flex-end;
+        margin-top: 1rem;
     }
-    @media (max-width: 1000px) {
-        .card {
-            width: 95vw;
+
+    @media (max-width: 768px) {
+        .main-container {
+            flex-direction: column;
+        }
+
+        .top-container, .bottom-container {
+            width: 100%;
         }
     }
 </style>
