@@ -1,8 +1,8 @@
 name: Fetch CSV Data
 
 on:
-  # schedule:
-  #   - cron: '*/30 * * * *' # Runs every 30 minutes
+  schedule:
+     - cron: '*/30 * * * *' # Runs every 30 minutes
   workflow_dispatch:
 
 permissions:
@@ -16,11 +16,11 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Fetch CSV data 1
-        run: curl https://www.gwsr2024.xyz/surf/WICO_BENO_CENO_ARNO_HEAD_LAPO.csv -o static/WICO_BENO_CENO_ARNO_HEAD_LAPO.csv
+        run: curl https://rmmanalytics.com/Lleds_Water_Levels//WICO_BENO_CENO_ARNO_HEAD_LAPO.csv -o static/WICO_BENO_CENO_ARNO_HEAD_LAPO.csv
       - name: Fetch CSV data 2
-        run: curl https://www.gwsr2024.xyz/surf/GREENWAVE_13to20Year.csv -o static/GREENWAVE_13to20Year.csv
+        run: curl https://rmmanalytics.com/Lleds_Water_Levels/GREENWAVE_13to20Year.csv -o static/GREENWAVE_13to20Year.csv
       - name: Fetch CSV data 3
-        run: curl https://www.gwsr2024.xyz/surf/BENOWaterAirTemp.csv -o static/BENOWaterAirTemp.csv
+        run: curl https://rmmanalytics.com/Lleds_Water_Levels/BENOWaterAirTemp.csv -o static/BENOWaterAirTemp.csv
 
       - name: Commit and push if changes
         run: |
