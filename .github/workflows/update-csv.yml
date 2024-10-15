@@ -19,7 +19,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Fetch CSV data 1
-        run: curl https://rmmanalytics.com/Lleds_Water_Levels//WICO_BENO_CENO_ARNO_HEAD_LAPO.csv -o static/WICO_BENO_CENO_ARNO_HEAD_LAPO.csv
+        run: curl https://rmmanalytics.com/Lleds_Water_Levels/WICO_BENO_CENO_ARNO_HEAD_LAPO.csv -o static/WICO_BENO_CENO_ARNO_HEAD_LAPO.csv
       - name: Fetch CSV data 2
         run: curl https://rmmanalytics.com/Lleds_Water_Levels/GREENWAVE_13to20Year.csv -o static/GREENWAVE_13to20Year.csv
       - name: Fetch CSV data 3
